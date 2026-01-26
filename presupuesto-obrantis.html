@@ -323,6 +323,39 @@ body.pdf-mode .actions,
 body.pdf-mode button {
   display: none !important;
 }
+/* =====================
+   AJUSTES PARA PDF
+   ===================== */
+@media print {
+
+  body {
+    background: #ffffff !important;
+  }
+
+  /* Evitar cortes internos */
+  .card,
+  .grid,
+  .row,
+  .bd,
+  .hd,
+  table,
+  tr,
+  .sumtotal {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Separar bloques grandes correctamente */
+  .card {
+    page-break-after: auto;
+  }
+
+  /* Ocultar botones en PDF */
+  .actions,
+  button {
+    display: none !important;
+  }
+}
 
   </style>
 </head>
@@ -780,12 +813,21 @@ body.pdf-mode button {
     : 'presupuesto-obrantis';
 
   const opt = {
-    margin: 10,
-    filename: number + '.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
+  margin: [12, 10, 12, 10],
+  filename: number + '.pdf',
+  image: { type: 'jpeg', quality: 0.98 },
+  html2canvas: {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#ffffff'
+  },
+  jsPDF: {
+    unit: 'mm',
+    format: 'a4',
+    orientation: 'portrait'
+  }
+};
+
 
   setTimeout(() => {
     html2pdf().set(opt).from(element).save().then(() => {
