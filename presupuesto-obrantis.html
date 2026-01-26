@@ -396,6 +396,56 @@ body.pdf-mode button {
   color: #555;
   letter-spacing: 0.2px;
 }
+/* ===============================
+   MEJORA DE LEGIBILIDAD DE TEXTOS
+   =============================== */
+
+/* Textos generales */
+body {
+  line-height: 1.45;
+}
+
+/* Párrafos */
+p {
+  line-height: 1.5;
+  margin: 6px 0 10px 0;
+}
+
+/* Cajas de texto grandes (incluye / no incluye / observaciones) */
+.box,
+.textbox,
+textarea,
+.note,
+.summary-box {
+  line-height: 1.55;
+  padding: 12px 14px;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Textos largos dentro de cajas */
+.box p,
+.textbox p {
+  margin-bottom: 8px;
+}
+
+/* Pie de página */
+.footer,
+footer {
+  margin-top: 20px;
+  line-height: 1.4;
+}
+
+/* Evitar textos pegados en PDF */
+@media print {
+  body {
+    line-height: 1.5;
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
+}
 
   </style>
 </head>
