@@ -886,7 +886,7 @@ body.pdf-mode .subtitle{
     }
 
     // Inicializar con plantilla reforma y IVA 21% por defecto
-    setRowsFromTemplate('reforma');
+    setRowsFromTemplate('electricidad');
     document.getElementById('vatRate').value = "21";
     recalc();
 
@@ -910,7 +910,7 @@ body.pdf-mode .subtitle{
       document.getElementById('notes').value = "";
       document.getElementById('vatRate').value = "21";
       document.getElementById('globalDiscount').value = "0";
-      document.getElementById('workType').value = "reforma";
+      document.getElementById('workType').value = "electricidad";
       setRowsFromTemplate('reforma');
       recalc();
     });
