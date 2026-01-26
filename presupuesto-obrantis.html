@@ -906,47 +906,12 @@ body.pdf-mode .subtitle{
     });
 
     // PDF (usa html2pdf por CDN)
-   document.getElementById('btnPDF').addEventListener('click', () => {
+ // PDF / Impresión nativa (estable y profesional)
+document.getElementById('btnPDF').addEventListener('click', () => {
   recalc();
-
-  // Activar modo PDF (contraste alto / fondo blanco)
-  document.body.classList.add('pdf-mode');
-
-  const element = document.getElementById('printArea');
-  const number = document.getElementById('pillNumber')
-    ? document.getElementById('pillNumber').textContent.replace('Nº:','').trim()
-    : 'presupuesto-obrantis';
-
-  const opt = {
-  margin: [12, 10, 12, 10],
-  filename: number + '.pdf',
-  image: { type: 'jpeg', quality: 0.98 },
-  html2canvas: {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: '#ffffff'
-  },
-  jsPDF: {
-    unit: 'mm',
-    format: 'a4',
-    orientation: 'portrait'
-  },
-  pagebreak: {
-    mode: ['css', 'legacy'],
-    avoid: ['.card', '.no-break']
-  }
-};
-
-
-
-  setTimeout(() => {
-    html2pdf().set(opt).from(element).save().then(() => {
-      document.body.classList.remove('pdf-mode');
-    }).catch(() => {
-      document.body.classList.remove('pdf-mode');
-    });
-  }, 150);
+  window.print();
 });
+
 
 
     // Aceptación
