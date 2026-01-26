@@ -356,6 +356,23 @@ body.pdf-mode button {
     display: none !important;
   }
 }
+/* ===== LOGO REAL ===== */
+.logo-img{
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: transparent;
+  display: block;
+}
+
+/* En PDF, un poco más compacto */
+@media print{
+  .logo-img{
+    width: 48px !important;
+    height: 48px !important;
+  }
+}
 
   </style>
 </head>
@@ -364,7 +381,8 @@ body.pdf-mode button {
   <div class="wrap" id="printArea">
     <div class="topbar">
       <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
+        <img class="logo-img" src="logo obrantis BLANCO.png" alt="OBRANTIS" />
+
         <div>
           <h1>OBRANTIS S.L. — Presupuesto</h1>
           <p>Reformas generales y electricidad | IVA 21% | Partidas editables y aceptación</p>
