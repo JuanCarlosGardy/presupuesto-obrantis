@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>OBRANTIS S.L. — Presupuesto interactivo</title>
+  <title>Presupuesto eléctrico — Presupuesto interactivo</title>
   <style>
     :root{
       --bg:#0b1220;
@@ -511,7 +511,7 @@ body.pdf-mode .pdf-hide {
           <div class="row">
             <div>
               <label>Empresa / Profesional</label>
-              <input id="proName" value="OBRANTIS S.L. (empresa en constitución)" />
+              <input id="proName" value="presupuesto eléctrico (empresa en constitución)" />
             </div>
             <div>
               <label>Contacto</label>
@@ -953,7 +953,7 @@ body.pdf-mode .pdf-hide {
 
     function buildAcceptance(){
       recalc();
-      const pro = document.getElementById('proName').value.trim() || "OBRANTIS S.L.";
+      const pro = document.getElementById('proName').value.trim() || "presupuesto eléctrico";
       const proContact = document.getElementById('proContact').value.trim();
       const client = document.getElementById('clientName').value.trim() || "[Cliente]";
       const address = document.getElementById('siteAddress').value.trim() || "[Dirección de obra]";
