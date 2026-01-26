@@ -459,6 +459,16 @@ body.pdf-mode .subtitle{
   letter-spacing: 0 !important;
   word-spacing: 0.12em !important;
 }
+.pdf-mode .card,
+.pdf-mode table,
+.pdf-mode tr {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.pdf-mode {
+  background: #fff !important;
+}
 
   </style>
 </head>
@@ -905,12 +915,27 @@ body.pdf-mode .subtitle{
       recalc();
     });
 
-    // PDF (usa html2pdf por CDN)
- // PDF / Impresión nativa (estable y profesional)
-document.getElementById('btnPDF').addEventListener('click', () => {
+ document.getElementById('btnPDF').addEventListener('click', () => {
   recalc();
-  window.print();
+
+  document.body.classList.add('pdf-mode');
+
+  const element = document.getElementById('printArea');
+
+  const opt = {
+    margin:       [10, 8, 10, 8], // mm
+    filename:    'presupuesto-obrantis.pdf',
+    image:       { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak:   { mode: ['css', 'avoid-all'] }
+  };
+
+  html2pdf().set(opt).from(element).save().then(() => {
+    document.body.classList.remove('pdf-mode');
+  });
 });
+
 
 
 
@@ -1001,6 +1026,8 @@ Contacto: ${proContact}
       }
     });
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 </body>
 </html>
 
