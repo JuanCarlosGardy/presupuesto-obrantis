@@ -218,6 +218,66 @@
       .actions, .footer, .modal{display:none !important}
       .card{box-shadow:none}
     }
+    /* ===== ESTILOS SOLO PARA PDF / IMPRESIÓN ===== */
+@media print {
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .card,
+  .sumline,
+  .note,
+  .danger {
+    background: #ffffff !important;
+    border: 1px solid #cccccc !important;
+    box-shadow: none !important;
+  }
+
+  h1, h2, h3, h4 {
+    color: #000000 !important;
+  }
+
+  label,
+  .muted,
+  .pill {
+    color: #333333 !important;
+  }
+
+  input,
+  textarea,
+  select {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #999999 !important;
+  }
+
+  table {
+    background: #ffffff !important;
+  }
+
+  th {
+    background: #f0f0f0 !important;
+    color: #000000 !important;
+  }
+
+  td {
+    color: #000000 !important;
+  }
+
+  .sumtotal {
+    background: #e6f0ff !important;
+    border: 2px solid #000000 !important;
+    font-weight: bold;
+  }
+
+  .actions,
+  button {
+    display: none !important;
+  }
+}
+
   </style>
 </head>
 
