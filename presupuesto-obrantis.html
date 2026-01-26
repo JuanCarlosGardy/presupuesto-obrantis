@@ -446,6 +446,19 @@ footer {
     margin-bottom: 10px;
   }
 }
+/* ===== FIX ESPACIADO TEXTO EN PDF/HTML2CANVAS ===== */
+.subtitle{
+  letter-spacing: 0 !important;
+  word-spacing: 0.10em !important;
+  white-space: normal !important;
+  line-height: 1.25 !important;
+}
+
+/* Asegurar que html2canvas no aplaste el texto */
+body.pdf-mode .subtitle{
+  letter-spacing: 0 !important;
+  word-spacing: 0.12em !important;
+}
 
   </style>
 </head>
@@ -458,7 +471,8 @@ footer {
 
         <div>
           <h1>OBRANTIS S.L. — Presupuesto</h1>
-          <p>Reformas generales y electricidad · IVA 21% · Partidas editables y aceptación</p>
+          <p class="subtitle">Reformas generales y electricidad · IVA 21% · Partidas editables y aceptación</p>
+
         </div>
       </div>
       <div class="actions">
