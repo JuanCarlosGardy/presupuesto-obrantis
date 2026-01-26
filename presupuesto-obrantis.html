@@ -378,7 +378,7 @@ body.pdf-mode button {
     </div>
 
     <div class="grid">
-      <div class="card">
+      <div class="card no-break">
         <div class="hd">
           <h2>1) Datos generales</h2>
           <div class="mini">
@@ -444,7 +444,7 @@ body.pdf-mode button {
         </div>
       </div>
 
-      <div class="card">
+      <div class="card no-break">
         <div class="hd">
           <h2>2) Resumen económico</h2>
           <div class="mini">
@@ -825,8 +825,13 @@ body.pdf-mode button {
     unit: 'mm',
     format: 'a4',
     orientation: 'portrait'
+  },
+  pagebreak: {
+    mode: ['css', 'legacy'],
+    avoid: ['.card', '.no-break']
   }
 };
+
 
 
   setTimeout(() => {
