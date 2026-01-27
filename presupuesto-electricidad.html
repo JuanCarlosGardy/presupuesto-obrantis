@@ -921,22 +921,26 @@ function newBudgetNumber() {
 
     document.getElementById('btnAddRow').addEventListener('click', () => addRow());
 
-    document.getElementById('btnReset').addEventListener('click', () => {
-      if(!confirm('¿Restablecer los datos y volver a valores de ejemplo?')) return;
-      document.getElementById('clientName').value = "";
-      document.getElementById('siteAddress').value = "";
-      document.getElementById('jobSummary').value = "";
-      document.getElementById('techAnalysis').value = "";
-      document.getElementById('notes').value = "";
-      document.getElementById('vatRate').value = "21";
-      document.getElementById('globalDiscount').value = "0";
-      document.getElementById('workType').value = "electricidad";
-      setRowsFromTemplate('electricidad');
+   document.getElementById('btnReset').addEventListener('click', () => {
 
-      recalc();
-      
-      newBudgetNumber();
-    });
+  // Generar nuevo número SIEMPRE al pulsar Restablecer
+  newBudgetNumber();
+
+  if(!confirm('¿Restablecer los datos y volver a valores de ejemplo?')) return;
+
+  document.getElementById('clientName').value = "";
+  document.getElementById('siteAddress').value = "";
+  document.getElementById('jobSummary').value = "";
+  document.getElementById('techAnalysis').value = "";
+  document.getElementById('notes').value = "";
+  document.getElementById('vatRate').value = "21";
+  document.getElementById('globalDiscount').value = "0";
+  document.getElementById('workType').value = "electricidad";
+  setRowsFromTemplate('electricidad');
+
+  recalc();
+});
+
 
  document.getElementById('btnPDF').addEventListener('click', () => {
   recalc();
