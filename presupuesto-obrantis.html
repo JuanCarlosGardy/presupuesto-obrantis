@@ -729,6 +729,32 @@ body.pdf-mode .pdf-hide{
       const v = Number(n || 0);
       return v.toLocaleString('es-ES', { style:'currency', currency:'EUR' });
     };
+    // ===== NUMERACIÓN AUTOMÁTICA PRESUPUESTO =====
+function yearNow() {
+  return new Date().getFullYear();
+}
+
+function pad3(n) {
+  return String(n).padStart(3, '0');
+}
+
+function nextCounter(key) {
+  const current = parseInt(localStorage.getItem(key) || '0', 10) + 1;
+  localStorage.setItem(key, String(current));
+  return current;
+}
+
+function newBudgetNumber() {
+  const y = yearNow();
+  const key = `counter_OBR_${y}`;
+  const n = nextCounter(key);
+  const code = `OBR-${y}-${pad3(n)}`;
+
+  const el = document.getElementById('pillNumber');
+  if (el) el.textContent = `Nº: ${code}`;
+  return code;
+}
+
     const num = (v) => {
       const x = String(v ?? '').replace(',', '.');
       const n = Number(x);
