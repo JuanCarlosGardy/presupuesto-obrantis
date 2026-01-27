@@ -734,8 +734,27 @@ body.pdf-mode .pdf-hide{
       const n = Number(x);
       return Number.isFinite(n) ? n : 0;
     };
+function yearNow() {
+  return new Date().getFullYear();
+}
+
+function pad3(n) {
+  return String(n).padStart(3, '0');
+}
+
+function nextCounter(storageKey) {
+  const current = parseInt(localStorage.getItem(storageKey) || '0', 10);
+  const next = current + 1;
+  localStorage.setItem(storageKey, String(next));
+  return next;
+}
+
+function formatDoc(prefix, year, n) {
+  return `${prefix}-${year}-${pad3(n)}`;
+}
 
     const today = new Date();
+    const SERIES = { budget: 'PR', invoice: 'FR' }; // Presupuesto Reformas / Factura Reformas
     const dateStr = today.toLocaleDateString('es-ES', { year:'numeric', month:'2-digit', day:'2-digit' });
     document.getElementById('pillDate').textContent = "Fecha: " + dateStr;
 
@@ -920,6 +939,7 @@ body.pdf-mode .pdf-hide{
     });
 
  document.getElementById('btnPDF').addEventListener('click', () => {
+   newBudgetNumber();
   recalc();
 
   document.body.classList.add('pdf-mode');
@@ -1028,6 +1048,37 @@ Contacto: ${proContact}
       }catch(err){
         alert('No se pudo copiar automáticamente. Selecciona el texto y copia manualmente.');
       }
+      // ===== NUMERACIÓN AUTOMÁTICA DE PRESUPUESTOS =====
+
+const SERIES = {
+  budget: 'OBR'
+};
+
+function yearNow() {
+  return new Date().getFullYear();
+}
+
+function nextCounter(key) {
+  const current = parseInt(localStorage.getItem(key) || '0', 10) + 1;
+  localStorage.setItem(key, current);
+  return String(current).padStart(3, '0');
+}
+
+function formatDoc(series, year, n) {
+  return `${series}-${year}-${n}`;
+}
+
+function newBudgetNumber() {
+  const y = yearNow();
+  const key = `counter_${SERIES.budget}_${y}`;
+  const n = nextCounter(key);
+  const code = formatDoc(SERIES.budget, y, n);
+
+  const el = document.getElementById('pillNumber');
+  if (el) el.textContent = `Nº: ${code}`;
+
+  return code;
+}
     });
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
