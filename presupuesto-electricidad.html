@@ -921,10 +921,7 @@ function newBudgetNumber() {
 
     document.getElementById('btnAddRow').addEventListener('click', () => addRow());
 
-   document.getElementById('btnReset').addEventListener('click', () => {
-
-  // Generar nuevo número SIEMPRE al pulsar Restablecer
-  newBudgetNumber();
+  document.getElementById('btnReset').addEventListener('click', () => {
 
   if(!confirm('¿Restablecer los datos y volver a valores de ejemplo?')) return;
 
@@ -939,7 +936,10 @@ function newBudgetNumber() {
   setRowsFromTemplate('electricidad');
 
   recalc();
+
+  newBudgetNumber(); // ✅ al final, solo cuando confirmas
 });
+
 
 
  document.getElementById('btnPDF').addEventListener('click', () => {
