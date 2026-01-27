@@ -743,6 +743,19 @@ function nextCounter(key) {
   localStorage.setItem(key, String(current));
   return current;
 }
+// ===== NUMERACIÓN AUTOMÁTICA PRESUPUESTO (OBR) =====
+function newBudgetNumber() {
+  const y = yearNow();                 // usa tu función existente
+  const key = `counter_OBR_${y}`;      // contador anual
+  const n = nextCounter(key);          // usa tu función existente
+
+  const code = `OBR-${y}-${String(n).padStart(3, '0')}`;
+
+  const el = document.getElementById('pillNumber');
+  if (el) el.textContent = `Nº: ${code}`;
+
+  return code;
+}
 
 function newBudgetNumber() {
   const y = yearNow();
