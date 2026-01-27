@@ -729,6 +729,19 @@ body.pdf-mode .pdf-hide {
 
   <script>
     const eur = (n) => {
+      // ===== NUMERACIÓN AUTOMÁTICA PRESUPUESTO (ELECTRICIDAD) =====
+function newBudgetNumber() {
+  const y = new Date().getFullYear();
+  const key = `counter_PE_${y}`; // contador anual SOLO electricidad
+  const n = (parseInt(localStorage.getItem(key) || '0', 10) + 1);
+  localStorage.setItem(key, String(n));
+
+  const code = `PE-${y}-${String(n).padStart(3, '0')}`;
+  const el = document.getElementById('pillNumber');
+  if (el) el.textContent = `Nº: ${code}`;
+  return code;
+}
+
       const v = Number(n || 0);
       return v.toLocaleString('es-ES', { style:'currency', currency:'EUR' });
     };
@@ -921,6 +934,8 @@ body.pdf-mode .pdf-hide {
       setRowsFromTemplate('electricidad');
 
       recalc();
+      
+      newBudgetNumber();
     });
 
  document.getElementById('btnPDF').addEventListener('click', () => {
