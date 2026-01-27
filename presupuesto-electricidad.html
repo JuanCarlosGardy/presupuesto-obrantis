@@ -494,6 +494,7 @@ body.pdf-mode .pdf-hide {
         <button class="btn-warn" id="btnReset" type="button">Restablecer</button>
         <button class="btn-accent" id="btnPDF" type="button">Descargar PDF</button>
         <button class="btn-ok" id="btnAccept" type="button">Aceptar presupuesto</button>
+        <button class="btn-accent" id="btnRevision" type="button">Crear revisión</button>
       </div>
     </div>
 
@@ -728,7 +729,6 @@ body.pdf-mode .pdf-hide {
   <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 
   <script>
-    const eur = (n) => {
       // ===== NUMERACIÓN AUTOMÁTICA PRESUPUESTO (ELECTRICIDAD) =====
 function newBudgetNumber() {
   const y = new Date().getFullYear();
@@ -741,10 +741,82 @@ function newBudgetNumber() {
   if (el) el.textContent = `Nº: ${code}`;
   return code;
 }
+// ===== SNAPSHOT PRESUPUESTO ACEPTADO / REVISIÓN =====
 
-      const v = Number(n || 0);
-      return v.toLocaleString('es-ES', { style:'currency', currency:'EUR' });
-    };
+// Obtener número limpio (sin "Nº:")
+function getBudgetNumberRaw() {
+  const t = (document.getElementById('pillNumber')?.textContent || '').trim();
+  return t.replace('Nº:', '').trim(); // "OBR-2026-001" / "PE-2026-001"
+}
+
+// Guardar estado completo del presupuesto
+function snapshotBudget() {
+  const data = {
+    number: getBudgetNumberRaw(),
+    date: document.getElementById('pillDate')?.textContent || '',
+    proName: document.getElementById('proName')?.value || '',
+    contact: document.getElementById('contact')?.value || '',
+    clientName: document.getElementById('clientName')?.value || '',
+    siteAddress: document.getElementById('siteAddress')?.value || '',
+    workType: document.getElementById('workType')?.value || '',
+    vatRate: document.getElementById('vatRate')?.value || '',
+    globalDiscount: document.getElementById('globalDiscount')?.value || '',
+    rows: Array.from(document.querySelectorAll('#itemsBody tr')).map(tr => ({
+      desc: tr.querySelector('.desc')?.value || '',
+      qty: tr.querySelector('.qty')?.value || '',
+      price: tr.querySelector('.price')?.value || ''
+    }))
+  };
+
+  localStorage.setItem(`budget_${data.number}`, JSON.stringify(data));
+}
+
+// Bloquear edición tras aceptar
+function lockBudget() {
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    el.setAttribute('disabled', 'disabled');
+  });
+}
+
+// Crear revisión (nuevo número copiando todo)
+function createRevision() {
+  const prevNumber = getBudgetNumberRaw();
+  const saved = localStorage.getItem(`budget_${prevNumber}`);
+  if (!saved) {
+    alert('No hay presupuesto aceptado para crear revisión');
+    return;
+  }
+
+  // Genera nuevo número
+  newBudgetNumber();
+
+  // Carga datos
+  const data = JSON.parse(saved);
+  document.getElementById('proName').value = data.proName;
+  document.getElementById('contact').value = data.contact;
+  document.getElementById('clientName').value = data.clientName;
+  document.getElementById('siteAddress').value = data.siteAddress;
+  document.getElementById('workType').value = data.workType;
+  document.getElementById('vatRate').value = data.vatRate;
+  document.getElementById('globalDiscount').value = data.globalDiscount;
+
+  setRowsFromTemplate(data.workType);
+  const rows = document.querySelectorAll('#itemsBody tr');
+  data.rows.forEach((r, i) => {
+    if (!rows[i]) return;
+    rows[i].querySelector('.desc').value = r.desc;
+    rows[i].querySelector('.qty').value = r.qty;
+    rows[i].querySelector('.price').value = r.price;
+  });
+
+  recalc();
+}
+
+const eur = (n) => {
+  const v = Number(n || 0);
+  return v.toLocaleString('es-ES', { style:'currency', currency:'EUR' });
+};
+
     const num = (v) => {
       const x = String(v ?? '').replace(',', '.');
       const n = Number(x);
@@ -978,6 +1050,7 @@ document.getElementById('pillNumber').textContent = `Nº: PE-${y}-${String(n).pa
     const acceptText = document.getElementById('acceptText');
 
     function buildAcceptance(){
+    
       recalc();
       const pro = document.getElementById('proName').value.trim() || "presupuesto eléctrico";
       const proContact = document.getElementById('proContact').value.trim();
