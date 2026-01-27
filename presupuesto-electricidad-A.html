@@ -1132,6 +1132,26 @@ Contacto: ${proContact}
         alert('No se pudo copiar automáticamente. Selecciona el texto y copia manualmente.');
       }
     });
+    // ===== CREAR REVISIÓN DEL PRESUPUESTO =====
+const btnRevision = document.getElementById('btnRevision');
+
+if (btnRevision) {
+  btnRevision.addEventListener('click', () => {
+    console.log('✅ Click en Crear revisión');
+
+    const presupuesto = JSON.parse(localStorage.getItem('presupuestoActual')) || {};
+
+    presupuesto.revision = (presupuesto.revision || 0) + 1;
+    presupuesto.fechaRevision = new Date().toISOString();
+
+    localStorage.setItem('presupuestoActual', JSON.stringify(presupuesto));
+
+    alert(`Revisión creada correctamente (R${presupuesto.revision})`);
+  });
+} else {
+  console.error('❌ No se encontró el botón btnRevision');
+}
+
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
