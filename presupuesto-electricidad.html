@@ -922,7 +922,7 @@ function newBudgetNumber() {
     document.getElementById('btnAddRow').addEventListener('click', () => addRow());
 
   document.getElementById('btnReset').addEventListener('click', () => {
-alert('RESET OK');
+// alert('RESET OK');
 
   if(!confirm('¿Restablecer los datos y volver a valores de ejemplo?')) return;
 
@@ -937,8 +937,14 @@ alert('RESET OK');
   setRowsFromTemplate('electricidad');
 
   recalc();
+// ===== FORZAR NUMERACIÓN PE (prueba definitiva) =====
+const y = new Date().getFullYear();
+const key = `counter_PE_${y}`;
+const n = (parseInt(localStorage.getItem(key) || '0', 10) + 1);
+localStorage.setItem(key, String(n));
+document.getElementById('pillNumber').textContent = `Nº: PE-${y}-${String(n).padStart(3,'0')}`;
 
-  newBudgetNumber(); // ✅ al final, solo cuando confirmas
+  // newBudgetNumber(); // ✅ al final, solo cuando confirmas
 });
 
 
