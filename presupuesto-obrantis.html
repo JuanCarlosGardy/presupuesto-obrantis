@@ -975,10 +975,11 @@ function formatDoc(prefix, year, n) {
       document.getElementById('workType').value = "reforma";
       setRowsFromTemplate('reforma');
       recalc();
+      
+      newBudgetNumber();
     });
 
  document.getElementById('btnPDF').addEventListener('click', () => {
-   newBudgetNumber();
   recalc();
 
   document.body.classList.add('pdf-mode');
