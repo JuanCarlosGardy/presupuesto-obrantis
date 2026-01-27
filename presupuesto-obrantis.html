@@ -1048,31 +1048,32 @@ Contacto: ${proContact}
       }catch(err){
         alert('No se pudo copiar automáticamente. Selecciona el texto y copia manualmente.');
       }
-      // ===== NUMERACIÓN AUTOMÁTICA DE PRESUPUESTOS =====
-
-const SERIES = {
-  budget: 'OBR'
-};
+     // ===== NUMERACIÓN AUTOMÁTICA DE PRESUPUESTOS (SIN COLISIONES) =====
+const BUDGET_SERIES = 'OBR';
 
 function yearNow() {
   return new Date().getFullYear();
 }
 
+function pad3(n) {
+  return String(n).padStart(3, '0');
+}
+
 function nextCounter(key) {
   const current = parseInt(localStorage.getItem(key) || '0', 10) + 1;
-  localStorage.setItem(key, current);
-  return String(current).padStart(3, '0');
+  localStorage.setItem(key, String(current));
+  return current;
 }
 
 function formatDoc(series, year, n) {
-  return `${series}-${year}-${n}`;
+  return `${series}-${year}-${pad3(n)}`;
 }
 
 function newBudgetNumber() {
   const y = yearNow();
-  const key = `counter_${SERIES.budget}_${y}`;
+  const key = `counter_${BUDGET_SERIES}_${y}`;
   const n = nextCounter(key);
-  const code = formatDoc(SERIES.budget, y, n);
+  const code = formatDoc(BUDGET_SERIES, y, n);
 
   const el = document.getElementById('pillNumber');
   if (el) el.textContent = `Nº: ${code}`;
