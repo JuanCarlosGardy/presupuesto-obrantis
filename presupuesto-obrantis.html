@@ -3,368 +3,1179 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Presupuesto OBRANTIS</title>
+  <title>OBRANTIS S.L. — Presupuesto interactivo</title>
   <style>
-    :root{font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
-    body{margin:0;background:#f5f7fb;color:#111;}
-    header{padding:16px 18px;background:#fff;border-bottom:1px solid #e8ecf3;position:sticky;top:0;z-index:10}
-    .wrap{max-width:1100px;margin:0 auto;}
-    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#eef3ff;border:1px solid #dbe7ff;font-weight:700}
-    .btn{border:1px solid #d8deea;background:#fff;border-radius:10px;padding:10px 12px;cursor:pointer;font-weight:700}
-    .btn.primary{background:#111;color:#fff;border-color:#111}
-    .btn:disabled{opacity:.45;cursor:not-allowed}
-    main{padding:18px}
-    .card{background:#fff;border:1px solid #e8ecf3;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 10px 24px rgba(0,0,0,.04)}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
-    .col-6{grid-column:span 6}
-    .col-12{grid-column:span 12}
-    label{display:block;font-size:12px;font-weight:700;color:#3b465a;margin:0 0 6px}
-    input,textarea,select{width:100%;box-sizing:border-box;border:1px solid #d8deea;border-radius:10px;padding:10px 12px;font:inherit;background:#fff}
-    textarea{min-height:90px;resize:vertical}
-    .hint{font-size:12px;color:#5a6476}
-
-    /* ===== PARTIDAS (estructura estándar) ===== */
-    #items .item-row{display:grid;grid-template-columns: 1.2fr .5fr .4fr .2fr; gap:10px; align-items:start; padding:12px; border:1px solid #e8ecf3; border-radius:12px; margin:10px 0; background:#fbfcff}
-    #items .item-row .btn{padding:10px 10px}
-
-    /* ===== MODAL (scroll real) ===== */
-    .modal-overlay{
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      z-index: 9999;
+    :root{
+      --bg:#0b1220;
+      --card:#0f1a33;
+      --text:#e9eefc;
+      --muted:#b8c3e6;
+      --line:rgba(255,255,255,.12);
+      --accent:#6aa6ff;
+      --ok:#39d98a;
+      --warn:#ffcc66;
+      --bad:#ff6b6b;
+      --shadow: 0 12px 28px rgba(0,0,0,.35);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
     }
-    .modal-overlay.open{ display:flex; }
-    .modal-backdrop{
-      position:absolute; inset:0;
-      background: rgba(0,0,0,.55);
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(1200px 600px at 10% 0%, rgba(106,166,255,.18), transparent 60%),
+        radial-gradient(1200px 600px at 90% 10%, rgba(57,217,138,.12), transparent 55%),
+        var(--bg);
+      color:var(--text);
     }
-    .modal-panel{
-      position:relative;
-      width:min(920px, 100%);
-      max-height: calc(100vh - 48px);
-      background:#fff;
-      border-radius:14px;
+    .wrap{max-width:1120px;margin:28px auto;padding:0 18px}
+    .topbar{
+      display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
+      margin-bottom:16px;
+    }
+    .brand{display:flex; gap:12px; align-items:center;}
+    .logo{
+      width:46px;height:46px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(106,166,255,.9), rgba(57,217,138,.85));
+      box-shadow: var(--shadow);
+      flex:0 0 auto;
+    }
+    .brand h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
+    .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
+    button{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow: 0 8px 18px rgba(0,0,0,.22);
+      transition: transform .05s ease, background .2s ease, border-color .2s ease;
+    }
+    button:hover{background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.2)}
+    button:active{transform: translateY(1px)}
+    .btn-accent{
+      background: linear-gradient(135deg, rgba(106,166,255,.95), rgba(106,166,255,.55));
+      border-color: rgba(106,166,255,.65);
+    }
+    .btn-ok{
+      background: linear-gradient(135deg, rgba(57,217,138,.95), rgba(57,217,138,.55));
+      border-color: rgba(57,217,138,.65);
+    }
+    .btn-warn{
+      background: linear-gradient(135deg, rgba(255,204,102,.95), rgba(255,204,102,.5));
+      border-color: rgba(255,204,102,.65);
+      color:#152033;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} .actions{justify-content:flex-start} }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
       overflow:hidden;
-      box-shadow:0 20px 60px rgba(0,0,0,.35);
-      display:flex;
-      flex-direction:column;
     }
-    .modal-header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:14px 16px;border-bottom:1px solid #e9e9e9;background:#fafafa;
+    .card .hd{
+      padding:14px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
     }
-    .modal-title{margin:0;font-size:16px;font-weight:800}
-    .modal-close{border:0;background:transparent;font-size:22px;cursor:pointer;padding:6px 10px}
-    .modal-body{
-      padding:16px;
-      overflow-y:auto;
-      -webkit-overflow-scrolling: touch;
-      white-space: pre-wrap;
-      line-height: 1.35;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 13px;
-    }
-    body.modal-open{overflow:hidden;height:100%}
+    .card .hd h2{margin:0;font-size:14px;letter-spacing:.2px;color: var(--text);}
+    .card .bd{padding:14px 16px}
+    .muted{color:var(--muted); font-size:13px; line-height:1.35}
 
-    @media (max-width:900px){
-      .col-6{grid-column:span 12}
-      #items .item-row{grid-template-columns: 1fr; }
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px}
+    @media (max-width: 620px){ .row{grid-template-columns:1fr} }
+
+    label{display:block; font-size:12px; color: var(--muted); margin-bottom:6px}
+    input, textarea, select{
+      width:100%;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      border-radius: 12px;
+      padding:10px 10px;
+      outline:none;
+      font-size:14px;
     }
+    textarea{min-height:92px; resize:vertical}
+    input[type="number"]{font-family:var(--mono)}
+    .mini{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+    .pill{
+      border:1px solid rgba(255,255,255,.14);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color: var(--muted);
+      background: rgba(0,0,0,.18);
+    }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+    }
+    th, td{padding:10px 10px; border-bottom:1px solid rgba(255,255,255,.10); vertical-align:top;}
+    th{text-align:left; font-size:12px; color: var(--muted); background: rgba(255,255,255,.04);}
+    tr:last-child td{border-bottom:none}
+    td input, td textarea{border-radius:10px; padding:8px 8px; background: rgba(0,0,0,.16);}
+    td textarea{min-height:44px}
+    .td-actions{white-space:nowrap; width:1%}
+    .iconbtn{padding:8px 10px; border-radius:12px; font-family: var(--mono); font-weight:700;}
+
+    .summary{display:grid; gap:10px;}
+    .sumline{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:10px 12px; border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+    }
+    .sumline strong{font-family:var(--mono)}
+    .sumtotal{
+      background: linear-gradient(135deg, rgba(106,166,255,.18), rgba(57,217,138,.12));
+      border-color: rgba(106,166,255,.25);
+    }
+
+    .note{
+      border-left: 4px solid rgba(255,204,102,.8);
+      background: rgba(255,204,102,.08);
+      padding:10px 12px;
+      border-radius: 12px;
+      font-size:13px;
+      color: var(--text);
+    }
+    .danger{
+      border-left: 4px solid rgba(255,107,107,.85);
+      background: rgba(255,107,107,.08);
+      padding:10px 12px;
+      border-radius: 12px;
+      font-size:13px;
+    }
+
+    .split{display:grid; grid-template-columns: 1fr 1fr; gap:12px;}
+    @media (max-width: 980px){ .split{grid-template-columns:1fr} }
+
+    .footer{margin-top:16px;color: var(--muted);font-size:12px;text-align:center;opacity:.9;}
+
+    #printArea{padding:0;background:transparent;}
+
+    .modal{
+      position:fixed; inset:0; display:none;
+      background: rgba(0,0,0,.55);
+      align-items:center; justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .modal.open{display:flex}
+    .modal .box{
+      width:min(780px, 100%);
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(15,26,51,.98), rgba(11,18,32,.98));
+      box-shadow: 0 24px 60px rgba(0,0,0,.45);
+      overflow:hidden;
+    }
+    .modal .box .hd{
+      padding:14px 16px;
+      display:flex; justify-content:space-between; align-items:center;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+    }
+    .modal .box .bd{padding:14px 16px}
+    .modal pre{
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.12);
+      padding:12px;
+      border-radius: 14px;
+      overflow:auto;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size:12px;
+      line-height:1.35;
+      white-space:pre-wrap;
+    }
+
+    /* Impresión básica */
+    @media print{
+      body{background:#fff;color:#000}
+      .actions, .footer, .modal{display:none !important}
+      .card{box-shadow:none}
+    }
+    /* ===== ESTILOS SOLO PARA PDF / IMPRESIÓN ===== */
+@media print {
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .card,
+  .sumline,
+  .note,
+  .danger {
+    background: #ffffff !important;
+    border: 1px solid #cccccc !important;
+    box-shadow: none !important;
+  }
+
+  h1, h2, h3, h4 {
+    color: #000000 !important;
+  }
+
+  label,
+  .muted,
+  .pill {
+    color: #333333 !important;
+  }
+
+  input,
+  textarea,
+  select {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #999999 !important;
+  }
+
+  table {
+    background: #ffffff !important;
+  }
+
+  th {
+    background: #f0f0f0 !important;
+    color: #000000 !important;
+  }
+
+  td {
+    color: #000000 !important;
+  }
+
+  .sumtotal {
+    background: #e6f0ff !important;
+    border: 2px solid #000000 !important;
+    font-weight: bold;
+  }
+
+  .actions,
+  button {
+    display: none !important;
+  }
+}
+/* ===== MODO PDF FORZADO (html2pdf) ===== */
+body.pdf-mode {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+body.pdf-mode * {
+  color: #000000 !important;
+}
+/* =========================
+   AJUSTES FINOS SOLO PDF
+   ========================= */
+
+body.pdf-mode .sumline,
+body.pdf-mode .card,
+body.pdf-mode .split,
+body.pdf-mode .grid {
+  margin-top: 0 !important;
+}
+
+body.pdf-mode tr,
+body.pdf-mode .row,
+body.pdf-mode .sumline {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+body.pdf-mode h2,
+body.pdf-mode h3,
+body.pdf-mode label {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+body.pdf-mode .card,
+body.pdf-mode .split {
+  overflow: visible !important;
+}
+
+body.pdf-mode .card,
+body.pdf-mode .sumline,
+body.pdf-mode .note,
+body.pdf-mode .danger {
+  background: #ffffff !important;
+  border: 1px solid #000000 !important;
+  box-shadow: none !important;
+}
+
+body.pdf-mode input,
+body.pdf-mode textarea,
+body.pdf-mode select {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #000000 !important;
+}
+
+body.pdf-mode th {
+  background: #f0f0f0 !important;
+  color: #000000 !important;
+}
+
+body.pdf-mode td {
+  color: #000000 !important;
+}
+
+body.pdf-mode .sumtotal {
+  background: #e6f0ff !important;
+  border: 2px solid #000000 !important;
+  font-weight: bold;
+}
+
+body.pdf-mode .actions,
+body.pdf-mode button {
+  display: none !important;
+}
+/* =====================
+   AJUSTES PARA PDF
+   ===================== */
+@media print {
+
+  body {
+    background: #ffffff !important;
+  }
+
+  /* Evitar cortes internos */
+  .card,
+  .grid,
+  .row,
+  .bd,
+  .hd,
+  table,
+  tr,
+  .sumtotal {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Separar bloques grandes correctamente */
+  .card {
+    page-break-after: auto;
+  }
+
+  /* Ocultar botones en PDF */
+  .actions,
+  button {
+    display: none !important;
+  }
+}
+/* ===== LOGO REAL ===== */
+.logo-img{
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: transparent;
+  display: block;
+}
+
+/* En PDF, un poco más compacto */
+@media print{
+  .logo-img{
+    width: 48px !important;
+    height: 48px !important;
+  }
+}
+/* ===== CABECERA ===== */
+.header{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.header h1{
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.header p{
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 400;
+  color: #555;
+  letter-spacing: 0.2px;
+}
+/* ===============================
+   MEJORA DE LEGIBILIDAD DE TEXTOS
+   =============================== */
+
+/* Textos generales */
+body {
+  line-height: 1.45;
+}
+
+/* Párrafos */
+p {
+  line-height: 1.5;
+  margin: 6px 0 10px 0;
+}
+
+/* Cajas de texto grandes (incluye / no incluye / observaciones) */
+.box,
+.textbox,
+textarea,
+.note,
+.summary-box {
+  line-height: 1.55;
+  padding: 12px 14px;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Textos largos dentro de cajas */
+.box p,
+.textbox p {
+  margin-bottom: 8px;
+}
+
+/* Pie de página */
+.footer,
+footer {
+  margin-top: 20px;
+  line-height: 1.4;
+}
+
+/* Evitar textos pegados en PDF */
+@media print {
+  body {
+    line-height: 1.5;
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
+}
+/* ===== FIX ESPACIADO TEXTO EN PDF/HTML2CANVAS ===== */
+.subtitle{
+  letter-spacing: 0 !important;
+  word-spacing: 0.10em !important;
+  white-space: normal !important;
+  line-height: 1.25 !important;
+}
+
+/* Asegurar que html2canvas no aplaste el texto */
+body.pdf-mode .subtitle{
+  letter-spacing: 0 !important;
+  word-spacing: 0.12em !important;
+}
+.pdf-mode .card,
+.pdf-mode table,
+.pdf-mode tr {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.pdf-mode {
+  background: #fff !important;
+}
+/* Ocultar textos de ayuda solo en PDF */
+body.pdf-mode .pdf-hide{
+  display:none !important;
+}
+/* Evitar que el PDF corte este bloque entre páginas */
+.no-break{
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+/* ===== AJUSTES ANTISALTO DE PÁGINA PDF ===== */
+
+@media print {
+
+  /* Evitar que las tarjetas se partan */
+  .card,
+  .split,
+  .grid,
+  table,
+  .no-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Que cada partida se mantenga unida */
+  table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Evitar que el bloque Condiciones / Próximos pasos se parta */
+  #terms,
+  #nextSteps {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+/* ===== FORZAR SALTO DE PÁGINA ANTES (PDF) ===== */
+body.pdf-mode .page-break {
+  break-before: page !important;
+  page-break-before: always !important;
+}
+body.pdf-mode .page-break {
+  break-before: page !important;
+  page-break-before: always !important;
+}
+
+/* ===== AJUSTES FUERA DE @media (html2pdf) ===== */
+
+table tr {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+thead {
+  display: table-header-group;
+}
+
+body.pdf-mode .split {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+body.pdf-mode .card {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="wrap">
-      <div class="row">
-        <div class="pill" id="pillNumber">Nº: OBR-AAAA-000</div>
-        <button class="btn" id="btnNewNumber" type="button">Generar número</button>
-        <button class="btn primary" id="btnAccept" type="button">Aceptar presupuesto</button>
-        <button class="btn" id="btnRevision" type="button" disabled>Crear revisión</button>
-        <span class="hint" id="lockHint"></span>
+  <div class="wrap" id="printArea">
+    <div class="topbar">
+      <div class="brand">
+        <img class="logo-img" src="logo obrantis BLANCO.png" alt="OBRANTIS" />
+
+        <div>
+          <h1>OBRANTIS S.L. — Presupuesto</h1>
+          <p class="pdf-hide">Reformas generales · IVA % · Partidas editables y aceptación</p>
+
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-warn" id="btnReset" type="button">Restablecer</button>
+        <button class="btn-accent" id="btnPDF" type="button">Descargar PDF</button>
+        <button class="btn-ok" id="btnAccept" type="button">Aceptar presupuesto</button>
       </div>
     </div>
-  </header>
 
-  <main class="wrap">
-    <section class="card">
-      <h2 style="margin:0 0 10px">Datos del cliente</h2>
-      <div class="grid">
-        <div class="col-6">
-          <label>Cliente</label>
-          <input id="clientName" placeholder="Nombre / Empresa" />
+    <div class="grid">
+      <div class="card no-break">
+        <div class="hd">
+          <h2>1) Datos generales</h2>
+          <div class="mini">
+            <span class="pill" id="pillNumber">Nº: OBR-2026-001</span>
+            <span class="pill" id="pillDate"></span>
+          </div>
         </div>
-        <div class="col-6">
-          <label>DNI/NIF</label>
-          <input id="clientNif" placeholder="DNI / NIF" />
-        </div>
-        <div class="col-6">
-          <label>Dirección de obra</label>
-          <input id="workAddress" placeholder="Dirección" />
-        </div>
-        <div class="col-6">
-          <label>Teléfono / Email</label>
-          <input id="clientContact" placeholder="Teléfono / Email" />
-        </div>
-        <div class="col-12">
-          <label>Observaciones</label>
-          <textarea id="notes" placeholder="Notas internas o del cliente"></textarea>
+        <div class="bd">
+
+          <div class="row">
+            <div>
+              <label>Empresa / Profesional</label>
+              <input id="proName" value="OBRANTIS S.L. (empresa en constitución)" />
+            </div>
+            <div>
+              <label>Contacto</label>
+              <input id="proContact" value="Tel.: 610 673 307 | administracion@obrantis.com" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Cliente</label>
+              <input id="clientName" placeholder="Nombre y apellidos / empresa" />
+            </div>
+            <div>
+              <label>Dirección de la obra</label>
+              <input id="siteAddress" placeholder="Calle, número, localidad" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Tipo de trabajo</label>
+              <select id="workType">
+                <option value="reforma" selected>Reforma general</option>
+                <option value="electricidad">Electricidad</option>
+                <option value="mixto">Reforma + Electricidad (mixto)</option>
+                <option value="averia">Avería eléctrica / diagnóstico</option>
+              </select>
+            </div>
+            <div>
+              <label>Validez del presupuesto</label>
+              <select id="validity">
+                <option value="15">15 días</option>
+                <option value="30" selected>30 días</option>
+                <option value="45">45 días</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Resumen del encargo (visible para el cliente)</label>
+              <textarea id="jobSummary" placeholder="Ej.: Reforma integral de baño/cocina, con sustitución de instalaciones, revestimientos y acabados."></textarea>
+            </div>
+            <div>
+              <label>Análisis técnico inicial (qué implica)</label>
+              <textarea id="techAnalysis" placeholder="Ej.: Replanteo, protecciones, demoliciones, instalaciones, alicatado/solado, montaje y remates."></textarea>
+            </div>
+          </div>
+
         </div>
       </div>
-    </section>
 
-    <section class="card">
-      <div class="row" style="justify-content:space-between">
-        <h2 style="margin:0">Partidas</h2>
-        <button class="btn" id="btnAddItem" type="button">Añadir partida</button>
-      </div>
-
-      <!--
-        IMPORTANTE:
-        Si tu HTML real de partidas es distinto, aquí es donde se adapta.
-        Este sistema funciona con #items y cada fila .item-row.
-      -->
-      <div id="items"></div>
-
-      <div class="hint" style="margin-top:10px">
-        Consejo: el texto largo se mantiene completo. El problema que tenías era el modal sin scroll.
-      </div>
-    </section>
-
-    <section class="card">
-      <h2 style="margin:0 0 10px">Condiciones</h2>
-      <div class="grid">
-        <div class="col-12">
-          <label>Condiciones de pago y plazos</label>
-          <textarea id="terms" placeholder="Ej: 50% inicio, 50% fin. Plazo: 10-15 días laborables."></textarea>
+      <div class="card no-break">
+        <div class="hd">
+          <h2>2) Resumen económico</h2>
+          <div class="mini">
+            <span class="pill">IVA por defecto: 21%</span>
+          </div>
         </div>
-        <div class="col-12">
-          <label>Datos profesionales</label>
-          <textarea id="pro" placeholder="OBRANTIS, S.L. ..."></textarea>
-        </div>
-        <div class="col-12">
-          <label>Contacto profesional</label>
-          <input id="proContact" placeholder="Teléfono / Email" />
-        </div>
-      </div>
-    </section>
-  </main>
+        <div class="bd">
+          <div class="row" style="grid-template-columns:1fr 1fr">
+            <div>
+              <label>IVA</label>
+              <select id="vatRate">
+                <option value="21" selected>21%</option>
+                <option value="10">10%</option>
+                <option value="0">0%</option>
+              </select>
+            </div>
+            <div>
+              <label>Descuento global (€)</label>
+              <input id="globalDiscount" type="number" min="0" step="0.01" value="0" />
+            </div>
+          </div>
 
-  <!-- ===== MODAL ACEPTACIÓN ===== -->
-  <div id="modal" class="modal-overlay" aria-hidden="true">
-    <div class="modal-backdrop" data-close="1"></div>
-    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-header">
-        <h3 id="modalTitle" class="modal-title">Texto de aceptación</h3>
-        <div class="row" style="gap:8px">
-          <button class="btn" id="btnCopyAccept" type="button">Copiar</button>
-          <button class="modal-close" id="btnCloseModal" type="button" aria-label="Cerrar">×</button>
+          <div class="summary">
+            <div class="sumline"><span>Base imponible</span><strong id="subTotal">0,00 €</strong></div>
+            <div class="sumline"><span>Descuento total</span><strong id="discTotal">0,00 €</strong></div>
+            <div class="sumline"><span>IVA</span><strong id="vatTotal">0,00 €</strong></div>
+            <div class="sumline sumtotal"><span>Total</span><strong id="grandTotal">0,00 €</strong></div>
+          </div>
+
+          <div style="height:10px"></div>
+
+          <div class="note">
+            Presupuesto sujeto a confirmación de mediciones, accesos y condiciones de obra. Cualquier modificación de alcance se presupuestará aparte antes de ejecutar.
+          </div>
+
+          <div style="height:10px"></div>
+
+          <div class="danger" id="safetyBox" style="display:none">
+            Aviso de seguridad: si hay olor a quemado, chispazos, calentamiento anormal o saltos repetidos del automático, se recomienda cortar suministro y realizar revisión urgente.
+          </div>
         </div>
       </div>
-      <div class="modal-body" id="acceptText"></div>
+
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="hd">
+          <h2>3) Partidas del presupuesto</h2>
+          <div class="mini">
+            <button class="iconbtn" id="btnAddRow" type="button">+ Añadir partida</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="muted pdf-hide" style="margin-bottom:10px">
+            Puedes usar el mismo documento para reforma o electricidad. Edita partidas, cantidades y precios; el total se recalcula automáticamente.
+          </div>
+
+          <table class="no-break">
+            <thead>
+              <tr>
+                <th style="width:38%">Descripción</th>
+                <th style="width:12%">Ud.</th>
+                <th style="width:12%">Cantidad</th>
+                <th style="width:14%">Precio</th>
+                <th style="width:12%">Dto. %</th>
+                <th style="width:12%">Importe</th>
+                <th class="td-actions">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+
+         <div class="split no-break" style="margin-top:12px">
+            <div>
+              <label>Qué incluye el precio</label>
+              <textarea id="includes">
+- Mano de obra y gestión de ejecución según alcance descrito.
+- Materiales y suministros según partidas (salvo que se indique lo contrario).
+- Protección de zonas de paso y limpieza básica diaria.
+- Retirada de escombro/RSU en sacos o pequeño volumen (si aplica y se detalla).
+- Pruebas de funcionamiento / verificación básica de instalaciones ejecutadas.
+              </textarea>
+            </div>
+            <div>
+              <label>Qué NO incluye (exclusiones)</label>
+              <textarea id="excludes">
+- Licencias municipales, tasas, proyectos técnicos visados o dirección facultativa (si fueran necesarios y no se detallan).
+- Actuaciones no descritas expresamente en partidas (trabajos extra).
+- Reparación de vicios ocultos o daños preexistentes no visibles hasta abrir.
+- Pintura integral si no se presupuesta; mobiliario/electrodomésticos; elementos decorativos.
+- Aumento de potencia, trámites con comercializadora/distribuidora, y boletines/CIE si no se incluye partida específica.
+              </textarea>
+            </div>
+          </div>
+
+          <div class="split no-break" style="margin-top:12px">
+            <div>
+              <label>Condiciones de pago y plazos</label>
+              <textarea id="terms">
+- Reserva y planificación: 40% a la aceptación para acopio de material y agenda.
+- Pagos intermedios: según hitos/avance (si procede).
+- Resto: a finalización y entrega, tras comprobación del cliente.
+- Plazo estimado: según alcance y disponibilidad (se fijará tras replanteo/visita si procede).
+- Validez: la indicada en este documento.
+              </textarea>
+            </div>
+            <div>
+              <label>Próximos pasos</label>
+              <textarea id="nextSteps">
+1) Enviar aceptación por escrito (WhatsApp o email).
+2) Visita de replanteo/medición si procede.
+3) Confirmación de alcance final, materiales y fechas.
+4) Ejecución y cierre con comprobaciones y entrega.
+              </textarea>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label>Observaciones</label>
+              <textarea id="notes" placeholder="Ej.: horarios permitidos, accesos, ascensor, retirada de escombro, permisos de comunidad, etc."></textarea>
+            </div>
+            <div>
+              <label>Garantía / condiciones especiales</label>
+              <textarea id="warranty">
+- Garantía de mano de obra: 6 meses (salvo manipulación por terceros o mal uso).
+- Garantía de materiales: según fabricante.
+- Cualquier modificación del alcance o mediciones se comunicará y presupuestará antes de ejecutar.
+              </textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer pdf-hide">
+      OBRANTIS S.L. — Documento de propuesta económica para cliente. Puedes personalizar número, textos y partidas.
     </div>
   </div>
 
+  <div class="modal" id="acceptModal" role="dialog" aria-modal="true" aria-labelledby="acceptTitle">
+    <div class="box">
+      <div class="hd">
+        <h2 id="acceptTitle" style="margin:0;font-size:14px;">Aceptación del presupuesto</h2>
+        <button type="button" id="btnCloseModal">Cerrar</button>
+      </div>
+      <div class="bd">
+        <div class="muted" style="margin-bottom:10px">
+          Copia y pega este texto para firma (WhatsApp, email o documento).
+        </div>
+        <pre id="acceptText"></pre>
+        <div class="mini" style="margin-top:10px">
+          <button type="button" class="btn-accent" id="btnCopyAccept">Copiar texto</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+
   <script>
-    // ==========================
-    // NUMERACIÓN AUTOMÁTICA (GLOBAL)
-    // ==========================
-    const BUDGET_SERIES = 'OBR';
+    const eur = (n) => {
+      const v = Number(n || 0);
+      return v.toLocaleString('es-ES', { style:'currency', currency:'EUR' });
+    };
+    // ===== NUMERACIÓN AUTOMÁTICA PRESUPUESTO =====
+function yearNow() {
+  return new Date().getFullYear();
+}
 
-    function yearNow(){ return new Date().getFullYear(); }
-    function pad3(n){ return String(n).padStart(3,'0'); }
-    function nextCounter(key){
-      const current = parseInt(localStorage.getItem(key) || '0', 10) + 1;
-      localStorage.setItem(key, String(current));
-      return current;
+function pad3(n) {
+  return String(n).padStart(3, '0');
+}
+
+function nextCounter(key) {
+  const current = parseInt(localStorage.getItem(key) || '0', 10) + 1;
+  localStorage.setItem(key, String(current));
+  return current;
+}
+// ===== NUMERACIÓN AUTOMÁTICA PRESUPUESTO (OBR) =====
+function newBudgetNumber() {
+  const y = yearNow();                 // usa tu función existente
+  const key = `counter_OBR_${y}`;      // contador anual
+  const n = nextCounter(key);          // usa tu función existente
+
+  const code = `OBR-${y}-${String(n).padStart(3, '0')}`;
+
+  const el = document.getElementById('pillNumber');
+  if (el) el.textContent = `Nº: ${code}`;
+
+  return code;
+}
+
+function newBudgetNumber() {
+  const y = yearNow();
+  const key = `counter_OBR_${y}`;
+  const n = nextCounter(key);
+  const code = `OBR-${y}-${pad3(n)}`;
+
+  const el = document.getElementById('pillNumber');
+  if (el) el.textContent = `Nº: ${code}`;
+  return code;
+}
+
+    const num = (v) => {
+      const x = String(v ?? '').replace(',', '.');
+      const n = Number(x);
+      return Number.isFinite(n) ? n : 0;
+    };
+function yearNow() {
+  return new Date().getFullYear();
+}
+
+function pad3(n) {
+  return String(n).padStart(3, '0');
+}
+
+function nextCounter(storageKey) {
+  const current = parseInt(localStorage.getItem(storageKey) || '0', 10);
+  const next = current + 1;
+  localStorage.setItem(storageKey, String(next));
+  return next;
+}
+
+function formatDoc(prefix, year, n) {
+  return `${prefix}-${year}-${pad3(n)}`;
+}
+
+    const today = new Date();
+    const SERIES = { budget: 'PR', invoice: 'FR' }; // Presupuesto Reformas / Factura Reformas
+    const dateStr = today.toLocaleDateString('es-ES', { year:'numeric', month:'2-digit', day:'2-digit' });
+    document.getElementById('pillDate').textContent = "Fecha: " + dateStr;
+
+    // Plantillas de partidas por tipo de trabajo
+    const templates = {
+      reforma: [
+        { desc: "Visita técnica, medición y replanteo", unit:"serv", qty:1, price:60, disc:0 },
+        { desc: "Protecciones, desmontajes y demoliciones (según alcance)", unit:"lote", qty:1, price:350, disc:0 },
+        { desc: "Gestión y ejecución de albañilería / rozas / remates", unit:"lote", qty:1, price:520, disc:0 },
+        { desc: "Materiales y consumibles (según partidas y calidades)", unit:"lote", qty:1, price:480, disc:0 }
+      ],
+      electricidad: [
+        { desc: "Visita técnica y replanteo", unit:"serv", qty:1, price:45, disc:0 },
+        { desc: "Mano de obra instalación / montaje", unit:"h", qty:8, price:35, disc:0 },
+        { desc: "Material eléctrico (según partidas)", unit:"lote", qty:1, price:220, disc:0 },
+        { desc: "Pruebas y verificación básica", unit:"serv", qty:1, price:35, disc:0 }
+      ],
+      mixto: [
+        { desc: "Visita técnica, medición y replanteo", unit:"serv", qty:1, price:75, disc:0 },
+        { desc: "Demoliciones y preparación de soportes", unit:"lote", qty:1, price:420, disc:0 },
+        { desc: "Instalación eléctrica (líneas/mecanismos/cuadro según alcance)", unit:"lote", qty:1, price:650, disc:0 },
+        { desc: "Materiales (obra + eléctrico) según partidas", unit:"lote", qty:1, price:650, disc:0 }
+      ],
+      averia: [
+        { desc: "Desplazamiento + diagnóstico (sin reparación)", unit:"serv", qty:1, price:65, disc:0 },
+        { desc: "Mano de obra reparación (si procede)", unit:"h", qty:1, price:45, disc:0 },
+        { desc: "Material eléctrico (si procede)", unit:"lote", qty:1, price:35, disc:0 }
+      ]
+    };
+
+    const itemsBody = document.getElementById('itemsBody');
+
+    function rowTemplate(item){
+      const tr = document.createElement('tr');
+
+      const tdDesc = document.createElement('td');
+      const ta = document.createElement('textarea');
+      ta.value = item.desc || "";
+      ta.addEventListener('input', recalc);
+      tdDesc.appendChild(ta);
+
+      const tdUnit = document.createElement('td');
+      const inpUnit = document.createElement('input');
+      inpUnit.value = item.unit || "ud";
+      inpUnit.addEventListener('input', recalc);
+      tdUnit.appendChild(inpUnit);
+
+      const tdQty = document.createElement('td');
+      const inpQty = document.createElement('input');
+      inpQty.type = 'number';
+      inpQty.min = '0';
+      inpQty.step = '0.01';
+      inpQty.value = item.qty ?? 1;
+      inpQty.addEventListener('input', recalc);
+      tdQty.appendChild(inpQty);
+
+      const tdPrice = document.createElement('td');
+      const inpPrice = document.createElement('input');
+      inpPrice.type = 'number';
+      inpPrice.min = '0';
+      inpPrice.step = '0.01';
+      inpPrice.value = item.price ?? 0;
+      inpPrice.addEventListener('input', recalc);
+      tdPrice.appendChild(inpPrice);
+
+      const tdDisc = document.createElement('td');
+      const inpDisc = document.createElement('input');
+      inpDisc.type = 'number';
+      inpDisc.min = '0';
+      inpDisc.step = '0.01';
+      inpDisc.value = item.disc ?? 0;
+      inpDisc.addEventListener('input', recalc);
+      tdDisc.appendChild(inpDisc);
+
+      const tdAmt = document.createElement('td');
+      const amt = document.createElement('div');
+      amt.style.fontFamily = 'var(--mono)';
+      amt.textContent = eur(0);
+      tdAmt.appendChild(amt);
+
+      const tdAct = document.createElement('td');
+      tdAct.className = "td-actions";
+      const btnDel = document.createElement('button');
+      btnDel.type = 'button';
+      btnDel.className = "iconbtn";
+      btnDel.textContent = "—";
+      btnDel.title = "Eliminar partida";
+      btnDel.addEventListener('click', () => {
+        tr.remove();
+        recalc();
+      });
+      tdAct.appendChild(btnDel);
+
+      tr.appendChild(tdDesc);
+      tr.appendChild(tdUnit);
+      tr.appendChild(tdQty);
+      tr.appendChild(tdPrice);
+      tr.appendChild(tdDisc);
+      tr.appendChild(tdAmt);
+      tr.appendChild(tdAct);
+
+      tr._refs = { ta, inpUnit, inpQty, inpPrice, inpDisc, amt };
+      return tr;
     }
-    function formatDoc(series, year, n){ return `${series}-${year}-${pad3(n)}`; }
 
-    function setPill(code){
-      const el = document.getElementById('pillNumber');
-      if (el) el.textContent = `Nº: ${code}`;
+    function addRow(item){
+      const tr = rowTemplate(item || {desc:"", unit:"ud", qty:1, price:0, disc:0});
+      itemsBody.appendChild(tr);
+      recalc();
     }
 
-    function getBudgetNumberRaw(){
-      const pill = document.getElementById('pillNumber')?.textContent || '';
-      const m = pill.match(/([A-Z]+-\d{4}-\d{3})/);
-      return m ? m[1] : null;
+    function setRowsFromTemplate(type){
+      itemsBody.innerHTML = "";
+      (templates[type] || templates.reforma).forEach(addRow);
+      recalc();
     }
 
-    function newBudgetNumber(){
-      const y = yearNow();
-      const key = `counter_${BUDGET_SERIES}_${y}`;
-      const n = nextCounter(key);
-      const code = formatDoc(BUDGET_SERIES, y, n);
-      setPill(code);
-      return code;
-    }
+    function recalc(){
+      let subtotal = 0;
+      let lineDiscountTotal = 0;
 
-    // ==========================
-    // PARTIDAS (demo funcional)
-    // ==========================
-    function addItemRow(data = {}){
-      const items = document.getElementById('items');
-      const row = document.createElement('div');
-      row.className = 'item-row';
-      row.innerHTML = `
-        <div>
-          <label>Descripción</label>
-          <textarea class="item-desc" placeholder="Describe la partida...">${data.desc ?? ''}</textarea>
-        </div>
-        <div>
-          <label>Cantidad</label>
-          <input class="item-qty" type="number" min="0" step="0.01" value="${data.qty ?? ''}" />
-        </div>
-        <div>
-          <label>Precio</label>
-          <input class="item-price" type="number" min="0" step="0.01" value="${data.price ?? ''}" />
-        </div>
-        <div>
-          <label>&nbsp;</label>
-          <button class="btn item-del" type="button">Eliminar</button>
-        </div>
-      `;
-      row.querySelector('.item-del').addEventListener('click', () => row.remove());
-      items.appendChild(row);
-    }
+      [...itemsBody.querySelectorAll('tr')].forEach(tr => {
+        const { inpQty, inpPrice, inpDisc, amt } = tr._refs;
+        const qty = num(inpQty.value);
+        const price = num(inpPrice.value);
+        const disc = Math.max(0, Math.min(100, num(inpDisc.value)));
 
-    document.getElementById('btnAddItem').addEventListener('click', () => addItemRow());
+        const line = qty * price;
+        const lineDisc = line * (disc/100);
+        const lineNet = line - lineDisc;
 
-    // ==========================
-    // SNAPSHOT (guardar/cargar)
-    // ==========================
-    function snapshotBudget(){
-      // 1) snapshot de todos los campos simples
-      const fields = {};
-      document.querySelectorAll('input, textarea, select').forEach(el => {
-        if (!el.id) return;
-        if (el.id === 'acceptText') return;
-        fields[el.id] = el.value;
+        subtotal += lineNet;
+        lineDiscountTotal += lineDisc;
+
+        amt.textContent = eur(lineNet);
       });
 
-      // 2) partidas (estructura estándar)
-      const items = [];
-      document.querySelectorAll('#items .item-row').forEach(r => {
-        items.push({
-          desc: r.querySelector('.item-desc')?.value ?? '',
-          qty: r.querySelector('.item-qty')?.value ?? '',
-          price: r.querySelector('.item-price')?.value ?? ''
-        });
-      });
+      const globalDisc = Math.max(0, num(document.getElementById('globalDiscount').value));
+      const vatRate = num(document.getElementById('vatRate').value);
 
-      return { fields, items };
+      const base = Math.max(0, subtotal - globalDisc);
+      const vat = base * (vatRate/100);
+      const total = base + vat;
+
+      document.getElementById('subTotal').textContent = eur(subtotal);
+      document.getElementById('discTotal').textContent = eur(lineDiscountTotal + globalDisc);
+      document.getElementById('vatTotal').textContent = eur(vat);
+      document.getElementById('grandTotal').textContent = eur(total);
+
+      const type = document.getElementById('workType').value;
+      document.getElementById('safetyBox').style.display = (type === 'averia') ? 'block' : 'none';
     }
 
-    function restoreSnapshot(snap){
-      if (!snap) return;
+    // Inicializar con plantilla reforma y IVA 21% por defecto
+    setRowsFromTemplate('reforma');
+    document.getElementById('vatRate').value = "21";
+    recalc();
 
-      // 1) campos
-      if (snap.fields){
-        Object.keys(snap.fields).forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.value = snap.fields[id];
-        });
-      }
+    // Eventos
+    document.getElementById('vatRate').addEventListener('change', recalc);
+    document.getElementById('globalDiscount').addEventListener('input', recalc);
 
-      // 2) partidas
-      const itemsWrap = document.getElementById('items');
-      itemsWrap.innerHTML = '';
-      (snap.items || []).forEach(it => addItemRow(it));
-    }
+    document.getElementById('workType').addEventListener('change', (e) => {
+      const type = e.target.value;
+      setRowsFromTemplate(type);
+    });
 
-    // ==========================
-    // BLOQUEO (aceptado)
-    // ==========================
-    function keyAccepted(numberRaw){ return `accepted:${numberRaw}`; }
-    function keySnapshot(numberRaw){ return `snapshot:${numberRaw}`; }
-    function keyLastAccepted(){ return `lastAcceptedNumber`; }
+    document.getElementById('btnAddRow').addEventListener('click', () => addRow());
 
-    function isAcceptedLocked(numberRaw){
-      return localStorage.getItem(keyAccepted(numberRaw)) === '1';
-    }
+    document.getElementById('btnReset').addEventListener('click', () => {
+      if(!confirm('¿Restablecer los datos y volver a valores de ejemplo?')) return;
+      document.getElementById('clientName').value = "";
+      document.getElementById('siteAddress').value = "";
+      document.getElementById('jobSummary').value = "";
+      document.getElementById('techAnalysis').value = "";
+      document.getElementById('notes').value = "";
+      document.getElementById('vatRate').value = "21";
+      document.getElementById('globalDiscount').value = "0";
+      document.getElementById('workType').value = "reforma";
+      setRowsFromTemplate('reforma');
+      recalc();
+      
+      newBudgetNumber();
+    });
 
-    function lockUI(locked){
-      const hint = document.getElementById('lockHint');
-      if (locked){
-        hint.textContent = 'Estado: Aceptado (bloqueado)';
-      } else {
-        hint.textContent = '';
-      }
-      document.querySelectorAll('input, textarea, select, #btnAddItem').forEach(el => {
-        if (el.id === 'btnNewNumber') return;
-        if (el.id === 'btnAccept') return;
-        if (el.id === 'btnRevision') return;
-        el.disabled = !!locked;
-      });
-      document.querySelectorAll('.item-del').forEach(b => b.disabled = !!locked);
-    }
+ document.getElementById('btnPDF').addEventListener('click', async () => {
+  recalc();
+  document.body.classList.add('pdf-mode');
 
-    // ==========================
-    // MODAL (scroll + cierre)
-    // ==========================
-    const modal = document.getElementById('modal');
+  const element = document.getElementById('printArea');
+
+  // 1) Convertir textareas a DIV temporalmente para que NO se corten
+  const swaps = [];
+  element.querySelectorAll('textarea').forEach(ta => {
+    const div = document.createElement('div');
+    div.textContent = ta.value;
+
+    div.style.whiteSpace = 'pre-wrap';
+    div.style.wordBreak = 'break-word';
+    div.style.padding = '10px';
+    div.style.borderRadius = '10px';
+    div.style.border = '1px solid rgba(255,255,255,.15)';
+    div.style.background = 'rgba(0,0,0,.15)';
+    div.style.color = 'inherit';
+    div.style.font = getComputedStyle(ta).font;
+
+    ta.style.display = 'none';
+    ta.parentNode.insertBefore(div, ta.nextSibling);
+    swaps.push({ ta, div });
+  });
+
+  const opt = {
+    margin: [10, 8, 10, 8], // mm
+    filename: 'presupuesto-obrantis.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { 
+  mode: ['css', 'legacy'], 
+  avoid: ['.no-break']
+}
+
+  };
+
+  try {
+    await html2pdf().set(opt).from(element).save();
+  } finally {
+    // Restaurar textareas
+    swaps.forEach(({ ta, div }) => {
+      div.remove();
+      ta.style.display = '';
+    });
+
+    // Quitar modo PDF al terminar
+    document.body.classList.remove('pdf-mode');
+  }
+});
+
+    // Aceptación
+    const modal = document.getElementById('acceptModal');
     const acceptText = document.getElementById('acceptText');
 
-    function openModal(text){
-      acceptText.textContent = text;
-      modal.classList.add('open');
-      document.body.classList.add('modal-open');
-      modal.setAttribute('aria-hidden','false');
-    }
-    function closeModal(){
-      modal.classList.remove('open');
-      document.body.classList.remove('modal-open');
-      modal.setAttribute('aria-hidden','true');
-    }
-
-    document.getElementById('btnCloseModal').addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-      if (e.target?.getAttribute && e.target.getAttribute('data-close') === '1') closeModal();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
-
-    // ==========================
-    // TEXTO DE ACEPTACIÓN (tu plantilla)
-    // ==========================
     function buildAcceptance(){
-      const client = document.getElementById('clientName').value || '(Cliente)';
-      const nif = document.getElementById('clientNif').value || '(DNI/NIF)';
-      const addr = document.getElementById('workAddress').value || '(Dirección)';
-      const contact = document.getElementById('clientContact').value || '(Contacto)';
-      const terms = document.getElementById('terms').value || '(Condiciones)';
-      const pro = document.getElementById('pro').value || '(Profesional)';
-      const proContact = document.getElementById('proContact').value || '(Contacto profesional)';
-      const numberRaw = getBudgetNumberRaw() || '(SIN NÚMERO)';
+      recalc();
+      const pro = document.getElementById('proName').value.trim() || "OBRANTIS S.L.";
+      const proContact = document.getElementById('proContact').value.trim();
+      const client = document.getElementById('clientName').value.trim() || "[Cliente]";
+      const address = document.getElementById('siteAddress').value.trim() || "[Dirección de obra]";
+      const number = document.getElementById('pillNumber').textContent.replace('Nº: ','').trim();
+      const validity = document.getElementById('validity').value;
+      const total = document.getElementById('grandTotal').textContent;
 
-      const itemLines = [];
-      document.querySelectorAll('#items .item-row').forEach((r, idx) => {
-        const d = r.querySelector('.item-desc')?.value ?? '';
-        const q = r.querySelector('.item-qty')?.value ?? '';
-        const p = r.querySelector('.item-price')?.value ?? '';
-        itemLines.push(`${idx+1}. ${d}\n   Cant.: ${q}  Precio: ${p}`);
-      });
+      const summary = document.getElementById('jobSummary').value.trim() || "[Resumen del encargo]";
+      const terms = document.getElementById('terms').value.trim();
+      const includes = document.getElementById('includes').value.trim();
+      const excludes = document.getElementById('excludes').value.trim();
+
+      const lines = [...itemsBody.querySelectorAll('tr')].map((tr, i) => {
+        const r = tr._refs;
+        const desc = (r.ta.value || "").trim() || "Partida";
+        const unit = (r.inpUnit.value || "ud").trim();
+        const qty = num(r.inpQty.value);
+        const price = num(r.inpPrice.value);
+        const disc = Math.max(0, Math.min(100, num(r.inpDisc.value)));
+        const net = qty * price * (1 - disc/100);
+        return `${String(i+1).padStart(2,'0')}. ${desc} | ${qty} ${unit} x ${eur(price)} | Dto ${disc}% | Importe: ${eur(net)}`;
+      }).join('\n');
 
       return (
-`PRESUPUESTO: ${numberRaw}
+`ACEPTACIÓN DE PRESUPUESTO
 
-CLIENTE:
-Nombre/Empresa: ${client}
-DNI/NIF: ${nif}
-Dirección: ${addr}
-Contacto: ${contact}
+Cliente: ${client}
+Dirección de la obra: ${address}
+Presupuesto nº: ${number}
+Fecha: ${dateStr}
+Validez: ${validity} días
 
-PARTIDAS:
-${itemLines.length ? itemLines.join('\n\n') : '(Sin partidas)'}
+Resumen del encargo:
+${summary}
 
-CONDICIONES DE PAGO Y PLAZOS:
+Partidas:
+${lines}
+
+Total presupuesto (IVA incluido): ${total}
+
+Incluye:
+${includes}
+
+No incluye:
+${excludes}
+
+Condiciones de pago y plazos:
 ${terms}
 
 Confirmo la aceptación del presupuesto y autorizo el inicio de los trabajos según el alcance descrito.
@@ -377,34 +1188,16 @@ Contacto: ${proContact}
 `);
     }
 
-    // ==========================
-    // FLUJO: Generar número / Aceptar / Revisión
-    // ==========================
-    document.getElementById('btnNewNumber').addEventListener('click', () => {
-      const code = newBudgetNumber();
-      const locked = isAcceptedLocked(code);
-      lockUI(locked);
-      document.getElementById('btnRevision').disabled = !localStorage.getItem(keyLastAccepted());
+    document.getElementById('btnAccept').addEventListener('click', () => {
+      acceptText.textContent = buildAcceptance();
+      modal.classList.add('open');
     });
 
-    document.getElementById('btnAccept').addEventListener('click', () => {
-      // 1) abrir modal con texto completo
-      openModal(buildAcceptance());
-
-      // 2) marcar aceptado + guardar snapshot
-      const numberRaw = getBudgetNumberRaw();
-      if (!numberRaw){
-        alert('Antes de aceptar, genera un número de presupuesto.');
-        return;
-      }
-      const snap = snapshotBudget();
-      localStorage.setItem(keySnapshot(numberRaw), JSON.stringify(snap));
-      localStorage.setItem(keyAccepted(numberRaw), '1');
-      localStorage.setItem(keyLastAccepted(), numberRaw);
-
-      // 3) bloquear UI + habilitar revisión
-      lockUI(true);
-      document.getElementById('btnRevision').disabled = false;
+    document.getElementById('btnCloseModal').addEventListener('click', () => {
+      modal.classList.remove('open');
+    });
+    modal.addEventListener('click', (e) => {
+      if(e.target === modal) modal.classList.remove('open');
     });
 
     document.getElementById('btnCopyAccept').addEventListener('click', async () => {
@@ -414,44 +1207,156 @@ Contacto: ${proContact}
       }catch(err){
         alert('No se pudo copiar automáticamente. Selecciona el texto y copia manualmente.');
       }
+     // ===== NUMERACIÓN AUTOMÁTICA DE PRESUPUESTOS (SIN COLISIONES) =====
+const BUDGET_SERIES = 'OBR';
+
+function yearNow() {
+  return new Date().getFullYear();
+}
+
+function pad3(n) {
+  return String(n).padStart(3, '0');
+}
+
+function nextCounter(key) {
+  const current = parseInt(localStorage.getItem(key) || '0', 10) + 1;
+  localStorage.setItem(key, String(current));
+  return current;
+}
+
+function formatDoc(series, year, n) {
+  return `${series}-${year}-${pad3(n)}`;
+}
+
+function newBudgetNumber() {
+  const y = yearNow();
+  const key = `counter_${BUDGET_SERIES}_${y}`;
+  const n = nextCounter(key);
+  const code = formatDoc(BUDGET_SERIES, y, n);
+
+  const el = document.getElementById('pillNumber');
+  if (el) el.textContent = `Nº: ${code}`;
+
+  return code;
+}
+    });ç
+// ================================
+// REVISIÓN (bloqueo + copia + nuevo número)
+// ================================
+function keyAccepted(n){ return `accepted:${n}`; }
+function keySnapshot(n){ return `snapshot:${n}`; }
+function keyLastAccepted(){ return `lastAcceptedNumber`; }
+
+// 1) Snapshot genérico (copia todos los inputs/textarea/select con id)
+function snapshotBudget(){
+  const data = { fields:{}, html:{} };
+
+  document.querySelectorAll('input, textarea, select').forEach(el=>{
+    if(!el.id) return;
+    if(el.id === 'acceptText') return; // tu <pre id="acceptText">
+    // checkbox/radio
+    if(el.type === 'checkbox') data.fields[el.id] = el.checked;
+    else if(el.type === 'radio') data.fields[el.id] = el.checked;
+    else data.fields[el.id] = el.value;
+  });
+
+  // 2) Partidas: guarda el HTML del bloque de partidas (muy robusto si tus filas son dinámicas)
+  // IMPORTANTE: cambia '#itemsWrap' por el contenedor real de tus partidas (PASO 3)
+  const itemsWrap = document.querySelector('#itemsWrap');
+  if(itemsWrap) data.html.items = itemsWrap.innerHTML;
+
+  return data;
+}
+
+function restoreSnapshot(snap){
+  if(!snap) return;
+
+  if(snap.fields){
+    Object.keys(snap.fields).forEach(id=>{
+      const el = document.getElementById(id);
+      if(!el) return;
+      if(el.type === 'checkbox') el.checked = !!snap.fields[id];
+      else if(el.type === 'radio') el.checked = !!snap.fields[id];
+      else el.value = snap.fields[id];
+    });
+  }
+
+  // Partidas HTML
+  const itemsWrap = document.querySelector('#itemsWrap');
+  if(itemsWrap && snap.html && typeof snap.html.items === 'string'){
+    itemsWrap.innerHTML = snap.html.items;
+  }
+}
+
+// 3) Marcar aceptado (llámalo AL FINAL de tu botón "Aceptar presupuesto")
+function markAccepted(){
+  const n = getBudgetNumberRaw?.();
+  if(!n) return;
+
+  localStorage.setItem(keySnapshot(n), JSON.stringify(snapshotBudget()));
+  localStorage.setItem(keyAccepted(n), '1');
+  localStorage.setItem(keyLastAccepted(), n);
+
+  // habilitar botón revisión
+  const btnRev = document.getElementById('btnRevision');
+  if(btnRev) btnRev.disabled = false;
+}
+
+// 4) Crear revisión (nuevo número + copiar todo)
+function createRevision(){
+  const last = localStorage.getItem(keyLastAccepted());
+  if(!last){
+    alert('No hay presupuesto aceptado para crear revisión.');
+    return;
+  }
+  const snapStr = localStorage.getItem(keySnapshot(last));
+  if(!snapStr){
+    alert('No se encontró el guardado del presupuesto aceptado.');
+    return;
+  }
+
+  const snap = JSON.parse(snapStr);
+
+  // genera nuevo número usando tu función real
+  const newCode = newBudgetNumber?.();
+  if(!newCode){
+    alert('No se pudo generar un nuevo número.');
+    return;
+  }
+
+  // copia todo
+  restoreSnapshot(snap);
+
+  // fuerza el pill del número a nuevo (si tu newBudgetNumber ya lo pone, perfecto)
+  // y deja el nuevo como editable (no aceptado)
+  localStorage.removeItem(keyAccepted(newCode));
+
+  alert(`Revisión creada: ${newCode}`);
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const btnRev = document.getElementById('btnRevision');
+  if(btnRev){
+    btnRev.addEventListener('click', (e)=>{
+      e.preventDefault();
+      createRevision();
     });
 
-    document.getElementById('btnRevision').addEventListener('click', () => {
-      const lastAccepted = localStorage.getItem(keyLastAccepted());
-      if (!lastAccepted){
-        alert('No hay presupuesto aceptado para crear revisión.');
-        return;
-      }
-      const snapStr = localStorage.getItem(keySnapshot(lastAccepted));
-      if (!snapStr){
-        alert('No se encontró el guardado del presupuesto aceptado.');
-        return;
-      }
+    // Si ya hay un aceptado previo, habilita el botón al cargar
+    btnRev.disabled = !localStorage.getItem(keyLastAccepted());
+  }
+});
 
-      // Genera nuevo número y restaura snapshot
-      const newCode = newBudgetNumber();
-      const snap = JSON.parse(snapStr);
-      restoreSnapshot(snap);
+// Exporta por si quieres llamarlo desde tu botón Aceptar
+window.__markAccepted = markAccepted;
 
-      // Asegura que el nuevo número quede puesto y NO esté marcado como aceptado
-      setPill(newCode);
-      localStorage.removeItem(keyAccepted(newCode));
-      lockUI(false);
-
-      alert(`Revisión creada: ${newCode}`);
-    });
-
-    // ==========================
-    // ARRANQUE: crear 1 partida por defecto y estado UI
-    // ==========================
-    addItemRow();
-    const existing = getBudgetNumberRaw();
-    if (existing && isAcceptedLocked(existing)) lockUI(true);
   </script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 </body>
 </html>
+
+
 
 
 
