@@ -1133,19 +1133,19 @@ function formatDoc(prefix, year, n) {
   // 1) Convertir textareas a DIV temporalmente para que NO se corten
   const swaps = [];
   element.querySelectorAll('textarea').forEach(ta => {
-    const div = document.createElement('div');
-    div.textContent = ta.value;
+    div.style.whiteSpace = ('div');
+div.textContent = ta.value;
+div.className = 'pdf-plain-text';
 
-    div.style.whiteSpace = 'pre-wrap';
+  div.style.whiteSpace = 'pre-wrap';
 div.style.wordBreak = 'break-word';
 div.style.overflowWrap = 'anywhere';
 div.style.padding = '0';
 div.style.margin = '0';
-div.style.borderRadius = '0';
 div.style.border = 'none';
 div.style.background = 'transparent';
 div.style.color = '#000000';
-div.style.lineHeight = '1.4';
+div.style.lineHeight = '1.35';
 div.style.font = getComputedStyle(ta).font;
 
     ta.style.display = 'none';
