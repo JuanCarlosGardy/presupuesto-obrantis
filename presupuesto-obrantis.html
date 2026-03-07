@@ -451,6 +451,27 @@
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
+    /* ===== TABLA DE PARTIDAS SIN ASPECTO DE TARJETA ===== */
+  table td input,
+  table td textarea,
+  table td .pdf-plain-text {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #000 !important;
+  }
+
+  table td textarea {
+    min-height: auto !important;
+  }
+
+  .td-actions,
+  table td button {
+    display: none !important;
+  }
 }
 
 /* =========================
@@ -618,6 +639,26 @@ body.pdf-mode .danger,
 body.pdf-mode .no-break {
   break-inside: avoid !important;
   page-break-inside: avoid !important;
+}
+    body.pdf-mode table td input,
+body.pdf-mode table td textarea,
+body.pdf-mode table td .pdf-plain-text {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: #000 !important;
+}
+
+body.pdf-mode table td textarea {
+  min-height: auto !important;
+}
+
+body.pdf-mode .td-actions,
+body.pdf-mode table td button {
+  display: none !important;
 }
 </style>
 </head>
