@@ -286,6 +286,35 @@ body.pdf-mode {
 body.pdf-mode * {
   color: #000000 !important;
 }
+/* =========================
+   AJUSTES FINOS SOLO PDF
+   ========================= */
+
+body.pdf-mode .sumline,
+body.pdf-mode .card,
+body.pdf-mode .split,
+body.pdf-mode .grid {
+  margin-top: 0 !important;
+}
+
+body.pdf-mode tr,
+body.pdf-mode .row,
+body.pdf-mode .sumline {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+body.pdf-mode h2,
+body.pdf-mode h3,
+body.pdf-mode label {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+body.pdf-mode .card,
+body.pdf-mode .split {
+  overflow: visible !important;
+}
 
 body.pdf-mode .card,
 body.pdf-mode .sumline,
@@ -473,7 +502,423 @@ body.pdf-mode .subtitle{
 body.pdf-mode .pdf-hide{
   display:none !important;
 }
+/* Evitar que el PDF corte este bloque entre páginas */
+.no-break{
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+/* ===== AJUSTES ANTISALTO DE PÁGINA PDF ===== */
 
+@media print {
+
+  /* Evitar que las tarjetas se partan */
+  .card,
+  .split,
+  .grid,
+  table,
+  .no-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Que cada partida se mantenga unida */
+  table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Evitar que el bloque Condiciones / Próximos pasos se parta */
+  #terms,
+  #nextSteps {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+/* ===== FORZAR SALTO DE PÁGINA ANTES (PDF) ===== */
+body.pdf-mode .page-break {
+  break-before: page !important;
+  page-break-before: always !important;
+}
+body.pdf-mode .page-break {
+  break-before: page !important;
+  page-break-before: always !important;
+}
+
+/* ===== AJUSTES FUERA DE @media (html2pdf) ===== */
+
+table tr {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+thead {
+  display: table-header-group;
+}
+
+body.pdf-mode .split {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+body.pdf-mode .card {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+  <style>
+/* =========================================================
+   IMPRESIÓN / PDF PROFESIONAL OBRANTIS
+   Pegar al final del bloque <style> del index.html
+   ========================================================= */
+
+@page {
+  size: A4;
+  margin: 12mm 10mm 12mm 10mm;
+}
+
+@media print {
+
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11.5px !important;
+    line-height: 1.35 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Ocultar elementos que no deben salir en PDF */
+  .actions,
+  .footer,
+  .modal,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Quitar aspecto visual de app */
+  .card,
+  .note,
+  .danger,
+  .sumline,
+  .sumtotal,
+  .pill,
+  .split,
+  .grid,
+  .row,
+  .bd,
+  .hd {
+    background: #ffffff !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .card,
+  .note,
+  .danger,
+  .sumline,
+  .sumtotal {
+    border: 1px solid #cfcfcf !important;
+    border-radius: 0 !important;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  label,
+  p,
+  span,
+  div,
+  td,
+  th,
+  li {
+    color: #000000 !important;
+  }
+
+  .muted {
+    color: #444444 !important;
+  }
+
+  input,
+  textarea,
+  select {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #9a9a9a !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  textarea {
+    resize: none !important;
+    overflow: visible !important;
+  }
+
+  /* Cabecera profesional */
+  .header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin: 0 0 10px 0 !important;
+    padding: 0 0 8px 0 !important;
+    border-bottom: 2px solid #000 !important;
+  }
+
+  .header h1 {
+    margin: 0 !important;
+    font-size: 20px !important;
+    line-height: 1.15 !important;
+    font-weight: 700 !important;
+  }
+
+  .header p {
+    margin: 3px 0 0 0 !important;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+    color: #333 !important;
+  }
+
+  .logo-img {
+    width: 42px !important;
+    height: 42px !important;
+    object-fit: contain !important;
+    border-radius: 0 !important;
+  }
+
+  /* Pasar de layout web a layout documento */
+  .grid,
+  .split {
+    display: block !important;
+    gap: 0 !important;
+  }
+
+  .grid > *,
+  .split > *,
+  .row > * {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .card {
+    margin: 0 0 10px 0 !important;
+    padding: 8px !important;
+    overflow: visible !important;
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  .card h2,
+  .card h3,
+  .card h4 {
+    margin-top: 0 !important;
+    margin-bottom: 6px !important;
+    padding-bottom: 4px !important;
+    border-bottom: 1px solid #999 !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    background: #ffffff !important;
+    table-layout: fixed !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
+  }
+
+  th,
+  td {
+    border: 1px solid #bdbdbd !important;
+    padding: 6px 7px !important;
+    vertical-align: top !important;
+    text-align: left !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    white-space: normal !important;
+  }
+
+  th {
+    background: #efefef !important;
+    font-weight: 700 !important;
+  }
+
+  tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .sumtotal,
+  .sumline,
+  .header,
+  .logo-img,
+  h1, h2, h3, h4 {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .sumtotal {
+    font-weight: 700 !important;
+    background: #f3f3f3 !important;
+    border: 2px solid #000 !important;
+  }
+
+  p, li, td, div, span {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .card:last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+/* =========================
+   MISMO ASPECTO cuando usas html2pdf con body.pdf-mode
+   ========================= */
+
+body.pdf-mode {
+  background: #ffffff !important;
+  color: #000000 !important;
+  font-size: 11.5px !important;
+  line-height: 1.35 !important;
+}
+
+body.pdf-mode .actions,
+body.pdf-mode .footer,
+body.pdf-mode .modal,
+body.pdf-mode button,
+body.pdf-mode .no-print {
+  display: none !important;
+}
+
+body.pdf-mode .card,
+body.pdf-mode .note,
+body.pdf-mode .danger,
+body.pdf-mode .sumline,
+body.pdf-mode .sumtotal,
+body.pdf-mode .pill,
+body.pdf-mode .split,
+body.pdf-mode .grid,
+body.pdf-mode .row,
+body.pdf-mode .bd,
+body.pdf-mode .hd {
+  background: #ffffff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+body.pdf-mode .card,
+body.pdf-mode .note,
+body.pdf-mode .danger,
+body.pdf-mode .sumline,
+body.pdf-mode .sumtotal {
+  border: 1px solid #cfcfcf !important;
+  border-radius: 0 !important;
+}
+
+body.pdf-mode input,
+body.pdf-mode textarea,
+body.pdf-mode select {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #9a9a9a !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.pdf-mode .header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 0 0 10px 0 !important;
+  padding: 0 0 8px 0 !important;
+  border-bottom: 2px solid #000 !important;
+}
+
+body.pdf-mode .header h1 {
+  margin: 0 !important;
+  font-size: 20px !important;
+  line-height: 1.15 !important;
+  font-weight: 700 !important;
+}
+
+body.pdf-mode .header p {
+  margin: 3px 0 0 0 !important;
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+  color: #333 !important;
+}
+
+body.pdf-mode .logo-img {
+  width: 42px !important;
+  height: 42px !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+}
+
+body.pdf-mode .grid,
+body.pdf-mode .split {
+  display: block !important;
+  gap: 0 !important;
+}
+
+body.pdf-mode .grid > *,
+body.pdf-mode .split > *,
+body.pdf-mode .row > * {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+body.pdf-mode .card {
+  margin: 0 0 10px 0 !important;
+  padding: 8px !important;
+  overflow: visible !important;
+}
+
+body.pdf-mode table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background: #ffffff !important;
+  table-layout: fixed !important;
+}
+
+body.pdf-mode th,
+body.pdf-mode td {
+  border: 1px solid #bdbdbd !important;
+  padding: 6px 7px !important;
+  vertical-align: top !important;
+  text-align: left !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+}
+
+body.pdf-mode th {
+  background: #efefef !important;
+  font-weight: 700 !important;
+}
+
+body.pdf-mode tr,
+body.pdf-mode .sumtotal,
+body.pdf-mode .sumline,
+body.pdf-mode .header,
+body.pdf-mode h1,
+body.pdf-mode h2,
+body.pdf-mode h3,
+body.pdf-mode h4 {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+</style>
   </style>
 </head>
 
@@ -619,7 +1064,7 @@ body.pdf-mode .pdf-hide{
             Puedes usar el mismo documento para reforma o electricidad. Edita partidas, cantidades y precios; el total se recalcula automáticamente.
           </div>
 
-          <table aria-label="Partidas">
+          <table class="no-break">
             <thead>
               <tr>
                 <th style="width:38%">Descripción</th>
@@ -634,7 +1079,7 @@ body.pdf-mode .pdf-hide{
             <tbody id="itemsBody"></tbody>
           </table>
 
-          <div class="split" style="margin-top:12px">
+         <div class="split no-break" style="margin-top:12px">
             <div>
               <label>Qué incluye el precio</label>
               <textarea id="includes">
@@ -657,7 +1102,7 @@ body.pdf-mode .pdf-hide{
             </div>
           </div>
 
-          <div class="split" style="margin-top:12px">
+          <div class="split no-break" style="margin-top:12px">
             <div>
               <label>Condiciones de pago y plazos</label>
               <textarea id="terms">
@@ -979,29 +1424,58 @@ function formatDoc(prefix, year, n) {
       newBudgetNumber();
     });
 
- document.getElementById('btnPDF').addEventListener('click', () => {
+ document.getElementById('btnPDF').addEventListener('click', async () => {
   recalc();
-
   document.body.classList.add('pdf-mode');
 
   const element = document.getElementById('printArea');
 
+  // 1) Convertir textareas a DIV temporalmente para que NO se corten
+  const swaps = [];
+  element.querySelectorAll('textarea').forEach(ta => {
+    const div = document.createElement('div');
+    div.textContent = ta.value;
+
+    div.style.whiteSpace = 'pre-wrap';
+    div.style.wordBreak = 'break-word';
+    div.style.padding = '10px';
+    div.style.borderRadius = '10px';
+    div.style.border = '1px solid rgba(255,255,255,.15)';
+    div.style.background = 'rgba(0,0,0,.15)';
+    div.style.color = 'inherit';
+    div.style.font = getComputedStyle(ta).font;
+
+    ta.style.display = 'none';
+    ta.parentNode.insertBefore(div, ta.nextSibling);
+    swaps.push({ ta, div });
+  });
+
   const opt = {
-    margin:       [10, 8, 10, 8], // mm
-    filename:    'presupuesto-obrantis.pdf',
-    image:       { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak:   { mode: ['css', 'avoid-all'] }
+    margin: [10, 8, 10, 8], // mm
+    filename: 'presupuesto-obrantis.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { 
+  mode: ['css', 'legacy'], 
+  avoid: ['.no-break']
+}
+
   };
 
-  html2pdf().set(opt).from(element).save().then(() => {
+  try {
+    await html2pdf().set(opt).from(element).save();
+  } finally {
+    // Restaurar textareas
+    swaps.forEach(({ ta, div }) => {
+      div.remove();
+      ta.style.display = '';
+    });
+
+    // Quitar modo PDF al terminar
     document.body.classList.remove('pdf-mode');
-  });
+  }
 });
-
-
-
 
     // Aceptación
     const modal = document.getElementById('acceptModal');
@@ -1120,7 +1594,117 @@ function newBudgetNumber() {
 
   return code;
 }
+    });ç
+// ================================
+// REVISIÓN (bloqueo + copia + nuevo número)
+// ================================
+function keyAccepted(n){ return `accepted:${n}`; }
+function keySnapshot(n){ return `snapshot:${n}`; }
+function keyLastAccepted(){ return `lastAcceptedNumber`; }
+
+// 1) Snapshot genérico (copia todos los inputs/textarea/select con id)
+function snapshotBudget(){
+  const data = { fields:{}, html:{} };
+
+  document.querySelectorAll('input, textarea, select').forEach(el=>{
+    if(!el.id) return;
+    if(el.id === 'acceptText') return; // tu <pre id="acceptText">
+    // checkbox/radio
+    if(el.type === 'checkbox') data.fields[el.id] = el.checked;
+    else if(el.type === 'radio') data.fields[el.id] = el.checked;
+    else data.fields[el.id] = el.value;
+  });
+
+  // 2) Partidas: guarda el HTML del bloque de partidas (muy robusto si tus filas son dinámicas)
+  // IMPORTANTE: cambia '#itemsWrap' por el contenedor real de tus partidas (PASO 3)
+  const itemsWrap = document.querySelector('#itemsWrap');
+  if(itemsWrap) data.html.items = itemsWrap.innerHTML;
+
+  return data;
+}
+
+function restoreSnapshot(snap){
+  if(!snap) return;
+
+  if(snap.fields){
+    Object.keys(snap.fields).forEach(id=>{
+      const el = document.getElementById(id);
+      if(!el) return;
+      if(el.type === 'checkbox') el.checked = !!snap.fields[id];
+      else if(el.type === 'radio') el.checked = !!snap.fields[id];
+      else el.value = snap.fields[id];
     });
+  }
+
+  // Partidas HTML
+  const itemsWrap = document.querySelector('#itemsWrap');
+  if(itemsWrap && snap.html && typeof snap.html.items === 'string'){
+    itemsWrap.innerHTML = snap.html.items;
+  }
+}
+
+// 3) Marcar aceptado (llámalo AL FINAL de tu botón "Aceptar presupuesto")
+function markAccepted(){
+  const n = getBudgetNumberRaw?.();
+  if(!n) return;
+
+  localStorage.setItem(keySnapshot(n), JSON.stringify(snapshotBudget()));
+  localStorage.setItem(keyAccepted(n), '1');
+  localStorage.setItem(keyLastAccepted(), n);
+
+  // habilitar botón revisión
+  const btnRev = document.getElementById('btnRevision');
+  if(btnRev) btnRev.disabled = false;
+}
+
+// 4) Crear revisión (nuevo número + copiar todo)
+function createRevision(){
+  const last = localStorage.getItem(keyLastAccepted());
+  if(!last){
+    alert('No hay presupuesto aceptado para crear revisión.');
+    return;
+  }
+  const snapStr = localStorage.getItem(keySnapshot(last));
+  if(!snapStr){
+    alert('No se encontró el guardado del presupuesto aceptado.');
+    return;
+  }
+
+  const snap = JSON.parse(snapStr);
+
+  // genera nuevo número usando tu función real
+  const newCode = newBudgetNumber?.();
+  if(!newCode){
+    alert('No se pudo generar un nuevo número.');
+    return;
+  }
+
+  // copia todo
+  restoreSnapshot(snap);
+
+  // fuerza el pill del número a nuevo (si tu newBudgetNumber ya lo pone, perfecto)
+  // y deja el nuevo como editable (no aceptado)
+  localStorage.removeItem(keyAccepted(newCode));
+
+  alert(`Revisión creada: ${newCode}`);
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const btnRev = document.getElementById('btnRevision');
+  if(btnRev){
+    btnRev.addEventListener('click', (e)=>{
+      e.preventDefault();
+      createRevision();
+    });
+
+    // Si ya hay un aceptado previo, habilita el botón al cargar
+    btnRev.disabled = !localStorage.getItem(keyLastAccepted());
+  }
+});
+
+// Exporta por si quieres llamarlo desde tu botón Aceptar
+window.__markAccepted = markAccepted;
+
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
