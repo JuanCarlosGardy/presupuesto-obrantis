@@ -211,363 +211,8 @@
       line-height:1.35;
       white-space:pre-wrap;
     }
-
-    /* Impresión básica */
-    @media print{
-      body{background:#fff;color:#000}
-      .actions, .footer, .modal{display:none !important}
-      .card{box-shadow:none}
-    }
-    /* ===== ESTILOS SOLO PARA PDF / IMPRESIÓN ===== */
-@media print {
-
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-  }
-
-  .card,
-  .sumline,
-  .note,
-  .danger {
-    background: #ffffff !important;
-    border: 1px solid #cccccc !important;
-    box-shadow: none !important;
-  }
-
-  h1, h2, h3, h4 {
-    color: #000000 !important;
-  }
-
-  label,
-  .muted,
-  .pill {
-    color: #333333 !important;
-  }
-
-  input,
-  textarea,
-  select {
-    background: #ffffff !important;
-    color: #000000 !important;
-    border: 1px solid #999999 !important;
-  }
-
-  table {
-    background: #ffffff !important;
-  }
-
-  th {
-    background: #f0f0f0 !important;
-    color: #000000 !important;
-  }
-
-  td {
-    color: #000000 !important;
-  }
-
-  .sumtotal {
-    background: #e6f0ff !important;
-    border: 2px solid #000000 !important;
-    font-weight: bold;
-  }
-
-  .actions,
-  button {
-    display: none !important;
-  }
-}
-/* ===== MODO PDF FORZADO (html2pdf) ===== */
-body.pdf-mode {
-  background: #ffffff !important;
-  color: #000000 !important;
-}
-
-body.pdf-mode * {
-  color: #000000 !important;
-}
-/* =========================
-   AJUSTES FINOS SOLO PDF
-   ========================= */
-
-body.pdf-mode .sumline,
-body.pdf-mode .card,
-body.pdf-mode .split,
-body.pdf-mode .grid {
-  margin-top: 0 !important;
-}
-
-body.pdf-mode tr,
-body.pdf-mode .row,
-body.pdf-mode .sumline {
-  break-inside: avoid !important;
-  page-break-inside: avoid !important;
-}
-
-body.pdf-mode h2,
-body.pdf-mode h3,
-body.pdf-mode label {
-  break-inside: avoid !important;
-  page-break-inside: avoid !important;
-}
-
-body.pdf-mode .card,
-body.pdf-mode .split {
-  overflow: visible !important;
-}
-
-body.pdf-mode .card,
-body.pdf-mode .sumline,
-body.pdf-mode .note,
-body.pdf-mode .danger {
-  background: #ffffff !important;
-  border: 1px solid #000000 !important;
-  box-shadow: none !important;
-}
-
-body.pdf-mode input,
-body.pdf-mode textarea,
-body.pdf-mode select {
-  background: #ffffff !important;
-  color: #000000 !important;
-  border: 1px solid #000000 !important;
-}
-
-body.pdf-mode th {
-  background: #f0f0f0 !important;
-  color: #000000 !important;
-}
-
-body.pdf-mode td {
-  color: #000000 !important;
-}
-
-body.pdf-mode .sumtotal {
-  background: #e6f0ff !important;
-  border: 2px solid #000000 !important;
-  font-weight: bold;
-}
-
-body.pdf-mode .actions,
-body.pdf-mode button {
-  display: none !important;
-}
-/* =====================
-   AJUSTES PARA PDF
-   ===================== */
-@media print {
-
-  body {
-    background: #ffffff !important;
-  }
-
-  /* Evitar cortes internos */
-  .card,
-  .grid,
-  .row,
-  .bd,
-  .hd,
-  table,
-  tr,
-  .sumtotal {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  /* Separar bloques grandes correctamente */
-  .card {
-    page-break-after: auto;
-  }
-
-  /* Ocultar botones en PDF */
-  .actions,
-  button {
-    display: none !important;
-  }
-}
-/* ===== LOGO REAL ===== */
-.logo-img{
-  width: 56px;
-  height: 56px;
-  object-fit: contain;
-  border-radius: 12px;
-  background: transparent;
-  display: block;
-}
-
-/* En PDF, un poco más compacto */
-@media print{
-  .logo-img{
-    width: 48px !important;
-    height: 48px !important;
-  }
-}
-/* ===== CABECERA ===== */
-.header{
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.header h1{
-  margin: 0;
-  font-size: 22px;
-  line-height: 1.2;
-  font-weight: 700;
-}
-
-.header p{
-  margin: 4px 0 0 0;
-  font-size: 13px;
-  line-height: 1.25;
-  font-weight: 400;
-  color: #555;
-  letter-spacing: 0.2px;
-}
-/* ===============================
-   MEJORA DE LEGIBILIDAD DE TEXTOS
-   =============================== */
-
-/* Textos generales */
-body {
-  line-height: 1.45;
-}
-
-/* Párrafos */
-p {
-  line-height: 1.5;
-  margin: 6px 0 10px 0;
-}
-
-/* Cajas de texto grandes (incluye / no incluye / observaciones) */
-.box,
-.textbox,
-textarea,
-.note,
-.summary-box {
-  line-height: 1.55;
-  padding: 12px 14px;
-  word-break: break-word;
-  white-space: normal;
-}
-
-/* Textos largos dentro de cajas */
-.box p,
-.textbox p {
-  margin-bottom: 8px;
-}
-
-/* Pie de página */
-.footer,
-footer {
-  margin-top: 20px;
-  line-height: 1.4;
-}
-
-/* Evitar textos pegados en PDF */
-@media print {
-  body {
-    line-height: 1.5;
-  }
-
-  p {
-    margin-bottom: 10px;
-  }
-}
-/* ===== FIX ESPACIADO TEXTO EN PDF/HTML2CANVAS ===== */
-.subtitle{
-  letter-spacing: 0 !important;
-  word-spacing: 0.10em !important;
-  white-space: normal !important;
-  line-height: 1.25 !important;
-}
-
-/* Asegurar que html2canvas no aplaste el texto */
-body.pdf-mode .subtitle{
-  letter-spacing: 0 !important;
-  word-spacing: 0.12em !important;
-}
-.pdf-mode .card,
-.pdf-mode table,
-.pdf-mode tr {
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
-
-.pdf-mode {
-  background: #fff !important;
-}
-/* Ocultar textos de ayuda solo en PDF */
-body.pdf-mode .pdf-hide{
-  display:none !important;
-}
-/* Evitar que el PDF corte este bloque entre páginas */
-.no-break{
-  break-inside: avoid !important;
-  page-break-inside: avoid !important;
-}
-/* ===== AJUSTES ANTISALTO DE PÁGINA PDF ===== */
-
-@media print {
-
-  /* Evitar que las tarjetas se partan */
-  .card,
-  .split,
-  .grid,
-  table,
-  .no-break {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  /* Que cada partida se mantenga unida */
-  table tr {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  /* Evitar que el bloque Condiciones / Próximos pasos se parta */
-  #terms,
-  #nextSteps {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-/* ===== FORZAR SALTO DE PÁGINA ANTES (PDF) ===== */
-body.pdf-mode .page-break {
-  break-before: page !important;
-  page-break-before: always !important;
-}
-body.pdf-mode .page-break {
-  break-before: page !important;
-  page-break-before: always !important;
-}
-
-/* ===== AJUSTES FUERA DE @media (html2pdf) ===== */
-
-table tr {
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-}
-
-thead {
-  display: table-header-group;
-}
-
-body.pdf-mode .split {
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-}
-
-body.pdf-mode .card {
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-}
-  <style>
 /* =========================================================
    IMPRESIÓN / PDF PROFESIONAL OBRANTIS
-   Pegar al final del bloque <style> del index.html
    ========================================================= */
 
 @page {
@@ -580,7 +225,7 @@ body.pdf-mode .card {
   html, body {
     background: #ffffff !important;
     color: #000000 !important;
-    font-size: 11.5px !important;
+    font-size: 11.2px !important;
     line-height: 1.35 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -591,105 +236,64 @@ body.pdf-mode .card {
     padding: 0 !important;
   }
 
-  /* Ocultar elementos que no deben salir en PDF */
   .actions,
   .footer,
   .modal,
   button,
+  .pdf-hide,
   .no-print {
     display: none !important;
   }
 
-  /* Quitar aspecto visual de app */
-  .card,
-  .note,
-  .danger,
-  .sumline,
-  .sumtotal,
-  .pill,
-  .split,
-  .grid,
-  .row,
-  .bd,
-  .hd {
-    background: #ffffff !important;
-    background-image: none !important;
-    box-shadow: none !important;
+  .wrap {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  .card,
-  .note,
-  .danger,
-  .sumline,
-  .sumtotal {
-    border: 1px solid #cfcfcf !important;
-    border-radius: 0 !important;
+  #printArea {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
   }
 
-  h1, h2, h3, h4, h5, h6,
-  label,
-  p,
-  span,
-  div,
-  td,
-  th,
-  li {
-    color: #000000 !important;
+  .topbar {
+    display: block !important;
+    margin-bottom: 10px !important;
   }
 
-  .muted {
-    color: #444444 !important;
-  }
-
-  input,
-  textarea,
-  select {
-    background: #ffffff !important;
-    color: #000000 !important;
-    border: 1px solid #9a9a9a !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-  }
-
-  textarea {
-    resize: none !important;
-    overflow: visible !important;
-  }
-
-  /* Cabecera profesional */
-  .header {
+  .brand {
     display: flex !important;
     align-items: center !important;
     gap: 10px !important;
-    margin: 0 0 10px 0 !important;
-    padding: 0 0 8px 0 !important;
+    padding-bottom: 8px !important;
     border-bottom: 2px solid #000 !important;
+    margin-bottom: 10px !important;
   }
 
-  .header h1 {
+  .brand h1 {
     margin: 0 !important;
     font-size: 20px !important;
     line-height: 1.15 !important;
-    font-weight: 700 !important;
+    color: #000 !important;
   }
 
-  .header p {
-    margin: 3px 0 0 0 !important;
+  .brand p {
+    margin: 2px 0 0 0 !important;
     font-size: 11px !important;
-    line-height: 1.25 !important;
     color: #333 !important;
   }
 
   .logo-img {
     width: 42px !important;
     height: 42px !important;
-    object-fit: contain !important;
     border-radius: 0 !important;
+    object-fit: contain !important;
   }
 
-  /* Pasar de layout web a layout documento */
   .grid,
-  .split {
+  .split,
+  .row {
     display: block !important;
     gap: 0 !important;
   }
@@ -699,31 +303,87 @@ body.pdf-mode .card {
   .row > * {
     width: 100% !important;
     max-width: 100% !important;
+    margin-bottom: 8px !important;
+  }
+
+  .card,
+  .sumline,
+  .sumtotal,
+  .note,
+  .danger,
+  .pill,
+  .hd,
+  .bd {
+    background: #fff !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    color: #000 !important;
   }
 
   .card {
-    margin: 0 0 10px 0 !important;
-    padding: 8px !important;
+    border: 1px solid #cfcfcf !important;
     overflow: visible !important;
+    margin: 0 0 10px 0 !important;
+    padding: 0 !important;
     break-inside: auto !important;
     page-break-inside: auto !important;
   }
 
-  .card h2,
-  .card h3,
-  .card h4 {
-    margin-top: 0 !important;
-    margin-bottom: 6px !important;
-    padding-bottom: 4px !important;
+  .card .hd {
     border-bottom: 1px solid #999 !important;
-    break-after: avoid !important;
-    page-break-after: avoid !important;
+    padding: 8px 10px !important;
+  }
+
+  .card .bd {
+    padding: 8px 10px !important;
+  }
+
+  .card .hd h2 {
+    margin: 0 !important;
+    font-size: 13px !important;
+    color: #000 !important;
+  }
+
+  .pill {
+    border: 1px solid #bbb !important;
+    padding: 4px 8px !important;
+    color: #333 !important;
+  }
+
+  label,
+  .muted,
+  h1, h2, h3, h4, h5, h6,
+  p, span, div, td, th, li {
+    color: #000 !important;
+  }
+
+  .muted {
+    color: #444 !important;
+  }
+
+  input,
+  textarea,
+  select {
+    background: #fff !important;
+    color: #000 !important;
+    border: 1px solid #9a9a9a !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  textarea {
+    resize: none !important;
+    overflow: visible !important;
+    min-height: auto !important;
   }
 
   table {
     width: 100% !important;
     border-collapse: collapse !important;
-    background: #ffffff !important;
+    background: #fff !important;
+    border: 1px solid #bdbdbd !important;
+    border-radius: 0 !important;
     table-layout: fixed !important;
   }
 
@@ -731,19 +391,16 @@ body.pdf-mode .card {
     display: table-header-group !important;
   }
 
-  tfoot {
-    display: table-footer-group !important;
-  }
-
   th,
   td {
     border: 1px solid #bdbdbd !important;
-    padding: 6px 7px !important;
+    padding: 6px !important;
     vertical-align: top !important;
     text-align: left !important;
+    white-space: normal !important;
     word-break: break-word !important;
     overflow-wrap: anywhere !important;
-    white-space: normal !important;
+    color: #000 !important;
   }
 
   th {
@@ -756,117 +413,95 @@ body.pdf-mode .card {
     page-break-inside: avoid !important;
   }
 
-  .sumtotal,
-  .sumline,
-  .header,
-  .logo-img,
-  h1, h2, h3, h4 {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
+  .sumline {
+    border: 1px solid #cfcfcf !important;
+    padding: 7px 10px !important;
   }
 
   .sumtotal {
+    border: 2px solid #000 !important;
     font-weight: 700 !important;
     background: #f3f3f3 !important;
-    border: 2px solid #000 !important;
   }
 
-  p, li, td, div, span {
-    orphans: 3;
-    widows: 3;
+  .note,
+  .danger {
+    border: 1px solid #bbb !important;
+    padding: 8px 10px !important;
   }
 
-  .card:last-child {
-    margin-bottom: 0 !important;
+  .no-break {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 }
 
 /* =========================
-   MISMO ASPECTO cuando usas html2pdf con body.pdf-mode
+   MODO PDF html2pdf
    ========================= */
 
 body.pdf-mode {
-  background: #ffffff !important;
-  color: #000000 !important;
-  font-size: 11.5px !important;
-  line-height: 1.35 !important;
+  background: #fff !important;
+  color: #000 !important;
 }
 
 body.pdf-mode .actions,
 body.pdf-mode .footer,
 body.pdf-mode .modal,
 body.pdf-mode button,
+body.pdf-mode .pdf-hide,
 body.pdf-mode .no-print {
   display: none !important;
 }
 
-body.pdf-mode .card,
-body.pdf-mode .note,
-body.pdf-mode .danger,
-body.pdf-mode .sumline,
-body.pdf-mode .sumtotal,
-body.pdf-mode .pill,
-body.pdf-mode .split,
-body.pdf-mode .grid,
-body.pdf-mode .row,
-body.pdf-mode .bd,
-body.pdf-mode .hd {
-  background: #ffffff !important;
-  background-image: none !important;
-  box-shadow: none !important;
+body.pdf-mode .wrap {
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-body.pdf-mode .card,
-body.pdf-mode .note,
-body.pdf-mode .danger,
-body.pdf-mode .sumline,
-body.pdf-mode .sumtotal {
-  border: 1px solid #cfcfcf !important;
-  border-radius: 0 !important;
+body.pdf-mode #printArea {
+  background: #fff !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-body.pdf-mode input,
-body.pdf-mode textarea,
-body.pdf-mode select {
-  background: #ffffff !important;
-  color: #000000 !important;
-  border: 1px solid #9a9a9a !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
+body.pdf-mode .topbar {
+  display: block !important;
+  margin-bottom: 10px !important;
 }
 
-body.pdf-mode .header {
+body.pdf-mode .brand {
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
-  margin: 0 0 10px 0 !important;
-  padding: 0 0 8px 0 !important;
+  padding-bottom: 8px !important;
   border-bottom: 2px solid #000 !important;
+  margin-bottom: 10px !important;
 }
 
-body.pdf-mode .header h1 {
-  margin: 0 !important;
-  font-size: 20px !important;
-  line-height: 1.15 !important;
-  font-weight: 700 !important;
-}
-
-body.pdf-mode .header p {
-  margin: 3px 0 0 0 !important;
-  font-size: 11px !important;
-  line-height: 1.25 !important;
-  color: #333 !important;
-}
-
-body.pdf-mode .logo-img {
-  width: 42px !important;
-  height: 42px !important;
-  object-fit: contain !important;
-  border-radius: 0 !important;
+body.pdf-mode .brand h1,
+body.pdf-mode .brand p,
+body.pdf-mode label,
+body.pdf-mode .muted,
+body.pdf-mode h1,
+body.pdf-mode h2,
+body.pdf-mode h3,
+body.pdf-mode h4,
+body.pdf-mode h5,
+body.pdf-mode h6,
+body.pdf-mode p,
+body.pdf-mode span,
+body.pdf-mode div,
+body.pdf-mode td,
+body.pdf-mode th,
+body.pdf-mode li {
+  color: #000 !important;
 }
 
 body.pdf-mode .grid,
-body.pdf-mode .split {
+body.pdf-mode .split,
+body.pdf-mode .row {
   display: block !important;
   gap: 0 !important;
 }
@@ -876,30 +511,75 @@ body.pdf-mode .split > *,
 body.pdf-mode .row > * {
   width: 100% !important;
   max-width: 100% !important;
+  margin-bottom: 8px !important;
+}
+
+body.pdf-mode .card,
+body.pdf-mode .sumline,
+body.pdf-mode .sumtotal,
+body.pdf-mode .note,
+body.pdf-mode .danger,
+body.pdf-mode .pill,
+body.pdf-mode .hd,
+body.pdf-mode .bd {
+  background: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  color: #000 !important;
 }
 
 body.pdf-mode .card {
-  margin: 0 0 10px 0 !important;
-  padding: 8px !important;
+  border: 1px solid #cfcfcf !important;
   overflow: visible !important;
+  margin: 0 0 10px 0 !important;
+  padding: 0 !important;
+}
+
+body.pdf-mode .card .hd {
+  border-bottom: 1px solid #999 !important;
+  padding: 8px 10px !important;
+}
+
+body.pdf-mode .card .bd {
+  padding: 8px 10px !important;
+}
+
+body.pdf-mode .pill {
+  border: 1px solid #bbb !important;
+  padding: 4px 8px !important;
+  color: #333 !important;
+}
+
+body.pdf-mode input,
+body.pdf-mode textarea,
+body.pdf-mode select {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #9a9a9a !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 body.pdf-mode table {
   width: 100% !important;
   border-collapse: collapse !important;
-  background: #ffffff !important;
+  background: #fff !important;
+  border: 1px solid #bdbdbd !important;
+  border-radius: 0 !important;
   table-layout: fixed !important;
 }
 
 body.pdf-mode th,
 body.pdf-mode td {
   border: 1px solid #bdbdbd !important;
-  padding: 6px 7px !important;
+  padding: 6px !important;
   vertical-align: top !important;
   text-align: left !important;
+  white-space: normal !important;
   word-break: break-word !important;
   overflow-wrap: anywhere !important;
-  white-space: normal !important;
+  color: #000 !important;
 }
 
 body.pdf-mode th {
@@ -908,18 +588,15 @@ body.pdf-mode th {
 }
 
 body.pdf-mode tr,
-body.pdf-mode .sumtotal,
 body.pdf-mode .sumline,
-body.pdf-mode .header,
-body.pdf-mode h1,
-body.pdf-mode h2,
-body.pdf-mode h3,
-body.pdf-mode h4 {
+body.pdf-mode .sumtotal,
+body.pdf-mode .note,
+body.pdf-mode .danger,
+body.pdf-mode .no-break {
   break-inside: avoid !important;
   page-break-inside: avoid !important;
 }
-</style>
-  </style>
+
 </head>
 
 <body>
