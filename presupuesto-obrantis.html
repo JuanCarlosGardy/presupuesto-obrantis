@@ -1388,13 +1388,13 @@ async function loadBudgetsList(){
 console.log('BTN OPEN:', document.getElementById('btnOpenBudget'));
 console.log('BTN UPDATE:', document.getElementById('btnUpdateBudget'));
      document.getElementById('btnSaveBudget').addEventListener('click', async () => {
+  alert('BOTON GUARDAR PULSADO');
+
   try{
-    console.log('CLICK EN GUARDAR');
     await saveBudgetToFirestore();
-    console.log('GUARDADO OK');
+    alert('GUARDADO OK');
   }catch(err){
-    console.error('ERROR GUARDANDO:', err);
-    alert('Error al guardar el presupuesto. Revisa consola.');
+    alert('ERROR AL GUARDAR: ' + err.message);
   }
 });
 
