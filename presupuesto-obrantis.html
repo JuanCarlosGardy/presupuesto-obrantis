@@ -1386,8 +1386,7 @@ console.log('BTN UPDATE:', document.getElementById('btnUpdateBudget'));
       alert('ANTES DE CONECTAR BTN SAVE');
     document.getElementById('btnSaveBudget').addEventListener('click', async () => {
   alert('BOTON GUARDAR PULSADO');
-
-  try{
+try{
     await saveBudgetToFirestore();
     alert('GUARDADO OK');
   }catch(err){
