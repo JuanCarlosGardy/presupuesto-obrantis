@@ -1086,7 +1086,151 @@ function formatDoc(prefix, year, n) {
     };
 
     const itemsBody = document.getElementById('itemsBody');
+function getBudgetNumberRaw(){
+  return (document.getElementById('pillNumber').textContent || '')
+    .replace('Nº:', '')
+    .trim();
+}
 
+function collectBudgetData(){
+  const rows = [...itemsBody.querySelectorAll('tr')].map(tr => {
+    const r = tr._refs;
+    return {
+      desc: r.ta.value || "",
+      unit: r.inpUnit.value || "",
+      qty: Number(r.inpQty.value || 0),
+      price: Number(r.inpPrice.value || 0),
+      disc: Number(r.inpDisc.value || 0)
+    };
+  });
+
+  return {
+    number: getBudgetNumberRaw(),
+    dateText: (document.getElementById('pillDate').textContent || '').replace('Fecha:', '').trim(),
+    proName: document.getElementById('proName').value || "",
+    proContact: document.getElementById('proContact').value || "",
+    clientName: document.getElementById('clientName').value || "",
+    siteAddress: document.getElementById('siteAddress').value || "",
+    workType: document.getElementById('workType').value || "reforma",
+    validity: document.getElementById('validity').value || "30",
+    jobSummary: document.getElementById('jobSummary').value || "",
+    techAnalysis: document.getElementById('techAnalysis').value || "",
+    vatRate: document.getElementById('vatRate').value || "21",
+    globalDiscount: document.getElementById('globalDiscount').value || "0",
+    includes: document.getElementById('includes').value || "",
+    excludes: document.getElementById('excludes').value || "",
+    terms: document.getElementById('terms').value || "",
+    nextSteps: document.getElementById('nextSteps').value || "",
+    notes: document.getElementById('notes').value || "",
+    warranty: document.getElementById('warranty').value || "",
+    totals: {
+      subTotal: document.getElementById('subTotal').textContent || "0,00 €",
+      discTotal: document.getElementById('discTotal').textContent || "0,00 €",
+      vatTotal: document.getElementById('vatTotal').textContent || "0,00 €",
+      grandTotal: document.getElementById('grandTotal').textContent || "0,00 €"
+    },
+    items: rows,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+}
+
+function fillBudgetForm(data){
+  document.getElementById('pillNumber').textContent = `Nº: ${data.number || ''}`;
+  document.getElementById('pillDate').textContent = `Fecha: ${data.dateText || ''}`;
+
+  document.getElementById('proName').value = data.proName || "";
+  document.getElementById('proContact').value = data.proContact || "";
+  document.getElementById('clientName').value = data.clientName || "";
+  document.getElementById('siteAddress').value = data.siteAddress || "";
+  document.getElementById('workType').value = data.workType || "reforma";
+  document.getElementById('validity').value = data.validity || "30";
+  document.getElementById('jobSummary').value = data.jobSummary || "";
+  document.getElementById('techAnalysis').value = data.techAnalysis || "";
+  document.getElementById('vatRate').value = data.vatRate || "21";
+  document.getElementById('globalDiscount').value = data.globalDiscount || "0";
+  document.getElementById('includes').value = data.includes || "";
+  document.getElementById('excludes').value = data.excludes || "";
+  document.getElementById('terms').value = data.terms || "";
+  document.getElementById('nextSteps').value = data.nextSteps || "";
+  document.getElementById('notes').value = data.notes || "";
+  document.getElementById('warranty').value = data.warranty || "";
+
+  itemsBody.innerHTML = "";
+  (data.items || []).forEach(addRow);
+
+  recalc();
+}
+    async function saveBudgetToFirestore(){
+  const data = collectBudgetData();
+  data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+
+  const docRef = await db.collection('presupuestos_obrantis').add(data);
+
+  document.getElementById('currentBudgetId').value = docRef.id;
+  document.getElementById('btnUpdateBudget').style.display = '';
+  alert('Presupuesto guardado correctamente.');
+}
+
+async function updateBudgetInFirestore(){
+  const id = document.getElementById('currentBudgetId').value;
+  if(!id){
+    alert('No hay presupuesto cargado para actualizar.');
+    return;
+  }
+
+  const data = collectBudgetData();
+  await db.collection('presupuestos_obrantis').doc(id).update(data);
+
+  alert('Cambios guardados correctamente.');
+}
+
+async function loadBudgetsList(){
+  const list = document.getElementById('budgetsList');
+  list.innerHTML = '<div class="muted">Cargando presupuestos...</div>';
+
+  const snap = await db.collection('presupuestos_obrantis')
+    .orderBy('updatedAt', 'desc')
+    .get();
+
+  if(snap.empty){
+    list.innerHTML = '<div class="muted">No hay presupuestos guardados.</div>';
+    return;
+  }
+
+  list.innerHTML = '';
+
+  snap.forEach(doc => {
+    const data = doc.data();
+
+    const box = document.createElement('div');
+    box.className = 'budget-item';
+
+    box.innerHTML = `
+      <strong>${data.number || 'Sin número'}</strong>
+      <div class="meta">
+        Cliente: ${data.clientName || '—'}<br>
+        Dirección: ${data.siteAddress || '—'}<br>
+        Tipo: ${data.workType || '—'}
+      </div>
+      <div class="mini">
+        <button type="button">Cargar</button>
+      </div>
+    `;
+
+    const btn = box.querySelector('button');
+    btn.addEventListener('click', async () => {
+      const snapDoc = await db.collection('presupuestos_obrantis').doc(doc.id).get();
+      const budget = snapDoc.data();
+
+      fillBudgetForm(budget);
+      document.getElementById('currentBudgetId').value = doc.id;
+      document.getElementById('btnUpdateBudget').style.display = '';
+      document.getElementById('budgetsModal').classList.remove('open');
+    });
+
+    list.appendChild(box);
+  });
+}
     function rowTemplate(item){
       const tr = document.createElement('tr');
 
@@ -1234,6 +1378,37 @@ function formatDoc(prefix, year, n) {
       document.getElementById('vatRate').value = "21";
       document.getElementById('globalDiscount').value = "0";
       document.getElementById('workType').value = "reforma";
+      document.getElementById('btnSaveBudget').addEventListener('click', async () => {
+  try{
+    await saveBudgetToFirestore();
+  }catch(err){
+    console.error(err);
+    alert('Error al guardar el presupuesto.');
+  }
+});
+
+document.getElementById('btnUpdateBudget').addEventListener('click', async () => {
+  try{
+    await updateBudgetInFirestore();
+  }catch(err){
+    console.error(err);
+    alert('Error al guardar cambios.');
+  }
+});
+
+document.getElementById('btnOpenBudget').addEventListener('click', async () => {
+  try{
+    await loadBudgetsList();
+    document.getElementById('budgetsModal').classList.add('open');
+  }catch(err){
+    console.error(err);
+    alert('Error al cargar la lista de presupuestos.');
+  }
+});
+
+document.getElementById('btnCloseBudgetsModal').addEventListener('click', () => {
+  document.getElementById('budgetsModal').classList.remove('open');
+});
       setRowsFromTemplate('reforma');
       recalc();
       
