@@ -966,32 +966,35 @@ body.pdf-mode table td button {
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
   <script>
-    alert('SCRIPT ARRANCA');
-    // ================================
+  alert('SCRIPT ARRANCA');
+
+// ================================
 // FIREBASE
 // ================================
+let db = null;
+
+try {
   const firebaseConfig = {
-
     apiKey: "AIzaSyBV16Ed_3YG5dUXGoBkY24a-rpbJHPBbhQ",
-
     authDomain: "obrantis-presupuestos.firebaseapp.com",
-
     projectId: "obrantis-presupuestos",
-
     storageBucket: "obrantis-presupuestos.firebasestorage.app",
-
     messagingSenderId: "906722593269",
-
     appId: "1:906722593269:web:15092bc8b64dca44a378bc"
-
   };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-      alert('FIREBASE OK');
+
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+
+  alert('FIREBASE OK');
 } catch (err) {
   alert('ERROR FIREBASE: ' + err.message);
-    }
-    const eur = (n) => {
+}
+
+const eur = (n) => {
+  const v = Number(n || 0);
+  return v.toLocaleString('es-ES', { style:'currency', currency:'EUR' });
+};
       const v = Number(n || 0);
       return v.toLocaleString('es-ES', { style:'currency', currency:'EUR' });
     };
