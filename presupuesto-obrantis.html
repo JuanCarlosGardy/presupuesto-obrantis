@@ -987,6 +987,10 @@ body.pdf-mode table td button {
   };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+      alert('FIREBASE OK');
+} catch (err) {
+  alert('ERROR FIREBASE: ' + err.message);
+    }
     const eur = (n) => {
       const v = Number(n || 0);
       return v.toLocaleString('es-ES', { style:'currency', currency:'EUR' });
