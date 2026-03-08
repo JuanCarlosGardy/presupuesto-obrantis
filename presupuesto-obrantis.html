@@ -956,7 +956,7 @@ body.pdf-mode table td button {
   <div class="box">
     <div class="hd">
       <h2 id="budgetsTitle" style="margin:0;font-size:14px;">Presupuestos guardados</h2>
-      <button type="button" id="btnCloseBudgetsModal">Cerrar</button>
+      <button type="button" id="btnCloseBudgetsModal" onclick="closeBudgetsModal()">Cerrar</button>
     </div>
     <div class="bd">
       <div class="muted" style="margin-bottom:10px">
@@ -970,8 +970,7 @@ body.pdf-mode table td button {
   <div class="box">
     <div class="hd">
       <h2 id="budgetsTitle" style="margin:0;font-size:14px;">Presupuestos guardados</h2>
-      <button type="button" id="btnCloseBudgetsModal">Cerrar</button>
-    </div>
+        </div>
     <div class="bd">
       <div class="muted" style="margin-bottom:10px">
         Selecciona un presupuesto para cargarlo y editarlo.
@@ -1008,6 +1007,10 @@ window.testUpdateBudget = async function () {
   } catch (err) {
     alert('ERROR AL GUARDAR CAMBIOS: ' + err.message);
   }
+};
+    window.closeBudgetsModal = function () {
+  const modal = document.getElementById('budgetsModal');
+  if (modal) modal.classList.remove('open');
 };
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
@@ -1710,6 +1713,37 @@ function newBudgetNumber() {
   const el = document.getElementById('pillNumber');
   if (el) el.textContent = `Nº: ${code}`;
 
+  return code;
+}
+      async function generateNextBudgetNumberFromFirestore() {
+  const y = yearNow();
+  const prefix = `OBR-${y}-`;
+
+  const snap = await db.collection('presupuestos_obrantis').get();
+
+  let maxNum = 0;
+
+  snap.forEach(doc => {
+    const data = doc.data();
+    const number = String(data.number || '');
+
+    if (number.startsWith(prefix)) {
+      const lastPart = number.replace(prefix, '').trim();
+      const n = parseInt(lastPart, 10);
+      if (!isNaN(n) && n > maxNum) {
+        maxNum = n;
+      }
+    }
+  });
+
+  const next = maxNum + 1;
+  return `OBR-${y}-${pad3(next)}`;
+}
+
+async function setNextBudgetNumberFromFirestore() {
+  const code = await generateNextBudgetNumberFromFirestore();
+  const el = document.getElementById('pillNumber');
+  if (el) el.textContent = `Nº: ${code}`;
   return code;
 }
     });
