@@ -1160,11 +1160,16 @@ function fillBudgetForm(data){
 
   recalc();
 }
-    async function saveBudgetToFirestore(){
+  async function saveBudgetToFirestore(){
+  console.log('Entrando en saveBudgetToFirestore');
+
   const data = collectBudgetData();
+  console.log('DATA A GUARDAR:', data);
+
   data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
 
   const docRef = await db.collection('presupuestos_obrantis').add(data);
+  console.log('DOC GUARDADO CON ID:', docRef.id);
 
   document.getElementById('currentBudgetId').value = docRef.id;
   document.getElementById('btnUpdateBudget').style.display = '';
@@ -1378,12 +1383,14 @@ async function loadBudgetsList(){
       document.getElementById('vatRate').value = "21";
       document.getElementById('globalDiscount').value = "0";
       document.getElementById('workType').value = "reforma";
-      document.getElementById('btnSaveBudget').addEventListener('click', async () => {
+     document.getElementById('btnSaveBudget').addEventListener('click', async () => {
   try{
+    console.log('CLICK EN GUARDAR');
     await saveBudgetToFirestore();
+    console.log('GUARDADO OK');
   }catch(err){
-    console.error(err);
-    alert('Error al guardar el presupuesto.');
+    console.error('ERROR GUARDANDO:', err);
+    alert('Error al guardar el presupuesto. Revisa consola.');
   }
 });
 
