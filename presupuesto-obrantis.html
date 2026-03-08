@@ -1165,62 +1165,106 @@ function formatDoc(prefix, year, n) {
       newBudgetNumber();
     });
 
- document.getElementById('btnPDF').addEventListener('click', async () => {
+document.getElementById('btnPDF').addEventListener('click', async () => {
   recalc();
   document.body.classList.add('pdf-mode');
 
   const element = document.getElementById('printArea');
+  const restores = [];
 
-  // 1) Convertir textareas a DIV temporalmente para que NO se corten
-  const swaps = [];
-  element.querySelectorAll('textarea').forEach(ta => {
-    div.style.whiteSpace = ('div');
-div.textContent = ta.value;
-div.className = 'pdf-plain-text';
+  // 1) Convertir TEXTAREA a texto plano temporal
+  element.querySelectorAll('textarea').forEach((ta) => {
+    const plain = document.createElement('div');
+    plain.textContent = ta.value;
 
-  div.style.whiteSpace = 'pre-wrap';
-div.style.wordBreak = 'break-word';
-div.style.overflowWrap = 'anywhere';
-div.style.padding = '0';
-div.style.margin = '0';
-div.style.border = 'none';
-div.style.background = 'transparent';
-div.style.color = '#000000';
-div.style.lineHeight = '1.35';
-div.style.font = getComputedStyle(ta).font;
+    plain.style.whiteSpace = 'pre-wrap';
+    plain.style.wordBreak = 'break-word';
+    plain.style.overflowWrap = 'anywhere';
+    plain.style.padding = '0';
+    plain.style.margin = '0';
+    plain.style.border = 'none';
+    plain.style.background = 'transparent';
+    plain.style.color = '#000000';
+    plain.style.lineHeight = '1.35';
+    plain.style.font = getComputedStyle(ta).font;
 
     ta.style.display = 'none';
-    ta.parentNode.insertBefore(div, ta.nextSibling);
-    swaps.push({ ta, div });
+    ta.parentNode.insertBefore(plain, ta);
+
+    restores.push(() => {
+      plain.remove();
+      ta.style.display = '';
+    });
+  });
+
+  // 2) Convertir INPUT y SELECT de la tabla a texto plano temporal
+  element.querySelectorAll('td input, td select').forEach((field) => {
+    const plain = document.createElement('div');
+
+    if (field.tagName === 'SELECT') {
+      plain.textContent = field.options[field.selectedIndex]?.text || field.value;
+    } else {
+      plain.textContent = field.value;
+    }
+
+    plain.style.whiteSpace = 'pre-wrap';
+    plain.style.wordBreak = 'break-word';
+    plain.style.overflowWrap = 'anywhere';
+    plain.style.padding = '0';
+    plain.style.margin = '0';
+    plain.style.border = 'none';
+    plain.style.background = 'transparent';
+    plain.style.color = '#000000';
+    plain.style.lineHeight = '1.35';
+    plain.style.font = getComputedStyle(field).font;
+
+    field.style.display = 'none';
+    field.parentNode.insertBefore(plain, field);
+
+    restores.push(() => {
+      plain.remove();
+      field.style.display = '';
+    });
+  });
+
+  // 3) Ocultar columna de acciones temporalmente
+  const actionCells = element.querySelectorAll('.td-actions');
+  actionCells.forEach((cell) => {
+    const oldDisplay = cell.style.display;
+    cell.style.display = 'none';
+
+    restores.push(() => {
+      cell.style.display = oldDisplay;
+    });
   });
 
   const opt = {
-    margin: [10, 8, 10, 8], // mm
+    margin: [10, 8, 10, 8],
     filename: 'presupuesto-obrantis.pdf',
     image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      scrollY: 0
+    },
+    jsPDF: {
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    },
     pagebreak: {
-  mode: ['css', 'legacy'],
-  avoid: ['.sumline', '.sumtotal', '.note', '.danger', 'tr']
-}
-
+      mode: ['css', 'legacy'],
+      avoid: ['.sumline', '.sumtotal', '.note', '.danger', 'tr']
+    }
   };
 
   try {
     await html2pdf().set(opt).from(element).save();
   } finally {
-    // Restaurar textareas
-    swaps.forEach(({ ta, div }) => {
-      div.remove();
-      ta.style.display = '';
-    });
-
-    // Quitar modo PDF al terminar
+    restores.reverse().forEach((restore) => restore());
     document.body.classList.remove('pdf-mode');
   }
 });
-
     // Aceptación
     const modal = document.getElementById('acceptModal');
     const acceptText = document.getElementById('acceptText');
