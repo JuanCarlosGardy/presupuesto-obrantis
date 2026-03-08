@@ -1384,14 +1384,28 @@ async function loadBudgetsList(){
 console.log('BTN OPEN:', document.getElementById('btnOpenBudget'));
 console.log('BTN UPDATE:', document.getElementById('btnUpdateBudget'));
       alert('ANTES DE CONECTAR BTN SAVE');
-    document.getElementById('btnSaveBudget').addEventListener('click', async () => {
-  alert('BOTON GUARDAR PULSADO');
-try{
-    await saveBudgetToFirestore();
-    alert('GUARDADO OK');
-  }catch(err){
-    alert('ERROR AL GUARDAR: ' + err.message);
+   window.addEventListener('DOMContentLoaded', () => {
+
+  const btnSave = document.getElementById('btnSaveBudget');
+
+  if (!btnSave) {
+    alert('NO EXISTE btnSaveBudget');
+    return;
   }
+
+  btnSave.addEventListener('click', async () => {
+
+    alert('BOTON GUARDAR PULSADO');
+
+    try{
+      await saveBudgetToFirestore();
+      alert('GUARDADO OK');
+    }catch(err){
+      alert('ERROR AL GUARDAR: ' + err.message);
+    }
+
+  });
+
 });
 
 document.getElementById('btnUpdateBudget').addEventListener('click', async () => {
