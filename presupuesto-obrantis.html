@@ -701,7 +701,7 @@ body.pdf-mode table td button {
     <div class="actions">
   <button class="btn-warn" id="btnReset" type="button">Restablecer</button>
   <button id="btnOpenBudget" type="button">Abrir</button>
-  <button id="btnSaveBudget" type="button">Guardar</button>
+  <button id="btnSaveBudget" type="button" onclick="testSaveClick()">Guardar</button>
   <button id="btnUpdateBudget" type="button" style="display:none;">Guardar cambios</button>
   <button class="btn-accent" id="btnPDF" type="button">Descargar PDF</button>
   <button class="btn-ok" id="btnAccept" type="button">Aceptar presupuesto</button>
@@ -968,8 +968,8 @@ alert('TEST SCRIPT SUELTO');
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
-  <script>
-  alert('SCRIPT ARRANCA');
+ <script>
+alert('SCRIPT ARRANCA');
 
 // ================================
 // FIREBASE
@@ -986,9 +986,11 @@ try {
     appId: "1:906722593269:web:15092bc8b64dca44a378bc"
   };
 
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.firestore();
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
+  db = firebase.firestore();
   alert('FIREBASE OK');
 } catch (err) {
   alert('ERROR FIREBASE: ' + err.message);
