@@ -1079,29 +1079,6 @@ function newBudgetNumber() {
       const n = Number(x);
       return Number.isFinite(n) ? n : 0;
     };
-function yearNow() {
-  return new Date().getFullYear();
-}
-
-function pad3(n) {
-  return String(n).padStart(3, '0');
-}
-
-function nextCounter(storageKey) {
-  const current = parseInt(localStorage.getItem(storageKey) || '0', 10);
-  const next = current + 1;
-  localStorage.setItem(storageKey, String(next));
-  return next;
-}
-
-function formatDoc(prefix, year, n) {
-  return `${prefix}-${year}-${pad3(n)}`;
-}
-
-    const today = new Date();
-    const SERIES = { budget: 'PR', invoice: 'FR' }; // Presupuesto Reformas / Factura Reformas
-    const dateStr = today.toLocaleDateString('es-ES', { year:'numeric', month:'2-digit', day:'2-digit' });
-    document.getElementById('pillDate').textContent = "Fecha: " + dateStr;
 
     // Plantillas de partidas por tipo de trabajo
     const templates = {
