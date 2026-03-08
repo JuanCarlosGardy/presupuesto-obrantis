@@ -240,6 +240,10 @@
 .budget-item .mini{
   margin-top: 8px;
 }
+    .btnDeleteBudget{
+  border-color: rgba(255,107,107,.45) !important;
+  color: #ffd7d7 !important;
+}
     #budgetsList{
   max-height: 65vh;
   overflow-y: auto;
@@ -1251,28 +1255,39 @@ async function loadBudgetsList(){
     const box = document.createElement('div');
     box.className = 'budget-item';
 
-    box.innerHTML = `
-      <strong>${data.number || 'Sin número'}</strong>
-      <div class="meta">
-        Cliente: ${data.clientName || '—'}<br>
-        Dirección: ${data.siteAddress || '—'}<br>
-        Tipo: ${data.workType || '—'}
-      </div>
-      <div class="mini">
-        <button type="button">Cargar</button>
-      </div>
-    `;
+   box.innerHTML = `
+  <strong>${data.number || 'Sin número'}</strong>
+  <div class="meta">
+    Cliente: ${data.clientName || '—'}<br>
+    Dirección: ${data.siteAddress || '—'}<br>
+    Tipo: ${data.workType || '—'}
+  </div>
+  <div class="mini">
+    <button type="button" class="btnLoadBudget">Cargar</button>
+    <button type="button" class="btnDeleteBudget">Borrar</button>
+  </div>
+`;
 
-    const btn = box.querySelector('button');
-    btn.addEventListener('click', async () => {
-      const snapDoc = await db.collection('presupuestos_obrantis').doc(doc.id).get();
-      const budget = snapDoc.data();
+  const btnLoad = box.querySelector('.btnLoadBudget');
+const btnDelete = box.querySelector('.btnDeleteBudget');
 
-      fillBudgetForm(budget);
-      document.getElementById('currentBudgetId').value = doc.id;
-      document.getElementById('btnUpdateBudget').style.display = '';
-      document.getElementById('budgetsModal').classList.remove('open');
-    });
+btnLoad.addEventListener('click', async () => {
+  const snapDoc = await db.collection('presupuestos_obrantis').doc(doc.id).get();
+  const budget = snapDoc.data();
+
+  fillBudgetForm(budget);
+  document.getElementById('currentBudgetId').value = doc.id;
+  document.getElementById('btnUpdateBudget').style.display = '';
+  document.getElementById('budgetsModal').classList.remove('open');
+});
+
+btnDelete.addEventListener('click', async () => {
+  const ok = confirm(`¿Seguro que quieres borrar el presupuesto ${data.number || doc.id}?`);
+  if(!ok) return;
+
+  await db.collection('presupuestos_obrantis').doc(doc.id).delete();
+  await loadBudgetsList();
+});
 
     list.appendChild(box);
   });
