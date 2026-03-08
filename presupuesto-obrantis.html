@@ -1063,6 +1063,36 @@ function nextCounter(key) {
 }
 // ===== NUMERACIÓN AUTOMÁTICA PRESUPUESTO (OBR) =====
 function newBudgetNumber() {
+  async function generateNextBudgetNumberFromFirestore() {
+  const y = yearNow();
+  const prefix = `OBR-${y}-`;
+
+  const snap = await db.collection('presupuestos_obrantis').get();
+
+  let maxNum = 0;
+
+  snap.forEach(doc => {
+    const data = doc.data();
+    const number = String(data.number || '');
+
+    if (number.startsWith(prefix)) {
+      const lastPart = number.replace(prefix, '').trim();
+      const n = parseInt(lastPart, 10);
+      if (!isNaN(n) && n > maxNum) {
+        maxNum = n;
+      }
+    }
+  });
+
+  const next = maxNum + 1;
+  return `OBR-${y}-${pad3(next)}`;
+}
+  async function setNextBudgetNumberFromFirestore() {
+  const code = await generateNextBudgetNumberFromFirestore();
+  const el = document.getElementById('pillNumber');
+  if (el) el.textContent = `Nº: ${code}`;
+  return code;
+}
   const y = yearNow();                 // usa tu función existente
   const key = `counter_OBR_${y}`;      // contador anual
   const n = nextCounter(key);          // usa tu función existente
@@ -1800,6 +1830,25 @@ document.addEventListener('DOMContentLoaded', ()=>{
 // Exporta por si quieres llamarlo desde tu botón Aceptar
 window.__markAccepted = markAccepted;
 console.log('SCRIPT CARGADO OK');
+   window.addEventListener('DOMContentLoaded', async () => {
+  try {
+
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('es-ES', { 
+      year:'numeric', 
+      month:'2-digit', 
+      day:'2-digit' 
+    });
+
+    const dateEl = document.getElementById('pillDate');
+    if(dateEl) dateEl.textContent = "Fecha: " + dateStr;
+
+    await setNextBudgetNumberFromFirestore();
+
+  } catch(err){
+    console.error("Error preparando numeración:", err);
+  }
+});
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
