@@ -964,6 +964,16 @@ body.pdf-mode table td button {
   <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
   <script>
 alert('TEST SCRIPT SUELTO');
+    window.testSaveClick = async function () {
+  alert('BOTON GUARDAR PULSADO HTML');
+
+  try {
+    await saveBudgetToFirestore();
+    alert('GUARDADO OK');
+  } catch (err) {
+    alert('ERROR AL GUARDAR: ' + err.message);
+  }
+};
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
