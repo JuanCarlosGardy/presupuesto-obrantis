@@ -1212,20 +1212,78 @@ function fillBudgetForm(data){
 
   recalc();
 }
+   async function resetFormForNewBudget() {
+  document.getElementById('currentBudgetId').value = "";
+  document.getElementById('btnUpdateBudget').style.display = 'none';
+
+  document.getElementById('clientName').value = "";
+  document.getElementById('siteAddress').value = "";
+  document.getElementById('jobSummary').value = "";
+  document.getElementById('techAnalysis').value = "";
+  document.getElementById('notes').value = "";
+
+  document.getElementById('vatRate').value = "21";
+  document.getElementById('globalDiscount').value = "0";
+  document.getElementById('workType').value = "reforma";
+  document.getElementById('validity').value = "30";
+
+  document.getElementById('includes').value = `- Mano de obra y gestión de ejecución según alcance descrito.
+- Materiales y suministros según partidas (salvo que se indique lo contrario).
+- Protección de zonas de paso y limpieza básica diaria.
+- Retirada de escombro/RSU en sacos o pequeño volumen (si aplica y se detalla).
+- Pruebas de funcionamiento / verificación básica de instalaciones ejecutadas.`;
+
+  document.getElementById('excludes').value = `- Licencias municipales, tasas, proyectos técnicos visados o dirección facultativa (si fueran necesarios y no se detallan).
+- Actuaciones no descritas expresamente en partidas (trabajos extra).
+- Reparación de vicios ocultos o daños preexistentes no visibles hasta abrir.
+- Pintura integral si no se presupuesta; mobiliario/electrodomésticos; elementos decorativos.
+- Aumento de potencia, trámites con comercializadora/distribuidora, y boletines/CIE si no se incluye partida específica.`;
+
+  document.getElementById('terms').value = `- Reserva y planificación: 40% a la aceptación para acopio de material y agenda.
+- Pagos intermedios: según hitos/avance (si procede).
+- Resto: a finalización y entrega, tras comprobación del cliente.
+- Plazo estimado: según alcance y disponibilidad (se fijará tras replanteo/visita si procede).
+- Validez: la indicada en este documento.`;
+
+  document.getElementById('nextSteps').value = `1) Enviar aceptación por escrito (WhatsApp o email).
+2) Visita de replanteo/medición si procede.
+3) Confirmación de alcance final, materiales y fechas.
+4) Ejecución y cierre con comprobaciones y entrega.`;
+
+  document.getElementById('warranty').value = `- Garantía de mano de obra: 6 meses (salvo manipulación por terceros o mal uso).
+- Garantía de materiales: según fabricante.
+- Cualquier modificación del alcance o mediciones se comunicará y presupuestará antes de ejecutar.`;
+
+  itemsBody.innerHTML = "";
+  setRowsFromTemplate('reforma');
+  recalc();
+
+  await setNextBudgetNumberFromFirestore();
+}
   async function saveBudgetToFirestore(){
-  console.log('Entrando en saveBudgetToFirestore');
+  const currentId = document.getElementById('currentBudgetId').value;
+
+  if (currentId) {
+    throw new Error('Este presupuesto ya existe. Usa "Guardar cambios".');
+  }
+
+  let currentNumber = getBudgetNumberRaw();
+
+  if (!currentNumber || !currentNumber.startsWith('OBR-')) {
+    currentNumber = await generateNextBudgetNumberFromFirestore();
+    const pill = document.getElementById('pillNumber');
+    if (pill) pill.textContent = `Nº: ${currentNumber}`;
+  }
 
   const data = collectBudgetData();
-  console.log('DATA A GUARDAR:', data);
-
+  data.number = currentNumber;
   data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
 
   const docRef = await db.collection('presupuestos_obrantis').add(data);
-  console.log('DOC GUARDADO CON ID:', docRef.id);
 
-  document.getElementById('currentBudgetId').value = docRef.id;
-  document.getElementById('btnUpdateBudget').style.display = '';
   alert('Presupuesto guardado correctamente.');
+
+  await resetFormForNewBudget();
 }
 
 async function updateBudgetInFirestore(){
