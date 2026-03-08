@@ -700,9 +700,9 @@ body.pdf-mode table td button {
       </div>
     <div class="actions">
   <button class="btn-warn" id="btnReset" type="button">Restablecer</button>
-  <button id="btnOpenBudget" type="button">Abrir</button>
+  <button id="btnOpenBudget" type="button" onclick="testOpenBudget()">Abrir</button>
   <button id="btnSaveBudget" type="button" onclick="testSaveClick()">Guardar</button>
-  <button id="btnUpdateBudget" type="button" style="display:none;">Guardar cambios</button>
+  <button id="btnUpdateBudget" type="button" style="display:none;" onclick="testUpdateBudget()">Guardar cambios</button>
   <button class="btn-accent" id="btnPDF" type="button">Descargar PDF</button>
   <button class="btn-ok" id="btnAccept" type="button">Aceptar presupuesto</button>
 </div>
@@ -972,6 +972,23 @@ alert('TEST SCRIPT SUELTO');
     alert('GUARDADO OK');
   } catch (err) {
     alert('ERROR AL GUARDAR: ' + err.message);
+  }
+};
+    window.testOpenBudget = async function () {
+  try {
+    await loadBudgetsList();
+    document.getElementById('budgetsModal').classList.add('open');
+  } catch (err) {
+    alert('ERROR AL ABRIR: ' + err.message);
+  }
+};
+
+window.testUpdateBudget = async function () {
+  try {
+    await updateBudgetInFirestore();
+    alert('CAMBIOS GUARDADOS OK');
+  } catch (err) {
+    alert('ERROR AL GUARDAR CAMBIOS: ' + err.message);
   }
 };
 </script>
